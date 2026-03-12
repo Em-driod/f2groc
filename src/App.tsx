@@ -27,6 +27,7 @@ import {
   Heart,
   Settings,
   LogOut,
+  Menu,
   CheckCircle2,
   Truck,
   Home,
@@ -40,7 +41,9 @@ import {
   Edit3,
   Trash2,
   Save,
-  AlertCircle
+  AlertCircle,
+  Droplet,
+  Award
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS, CATEGORIES, DELIVERY_ZONES, RIDERS } from './constants';
@@ -72,6 +75,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [location, setLocation] = useState('San Francisco, CA');
   const [sortBy, setSortBy] = useState<'default' | 'price-low' | 'price-high' | 'name'>('default');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -278,16 +282,17 @@ export default function App() {
           {/* Navigation */}
           <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-line">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between items-center h-24">
-                <div className="flex items-center gap-12">
+              <div className="flex justify-between items-center h-16 sm:h-20 lg:h-24">
+                <div className="flex items-center gap-8 lg:gap-12">
                   <div 
-                    className="flex items-center gap-3 cursor-pointer group"
+                    className="flex items-center gap-2 sm:gap-3 cursor-pointer group"
                     onClick={() => setView('store')}
                   >
-                    <div className="w-10 h-10 bg-ink flex items-center justify-center group-hover:bg-highlight transition-colors">
-                      <ShoppingBag className="w-5 h-5 text-paper" />
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-ink flex items-center justify-center group-hover:bg-highlight transition-colors">
+                      <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-paper" />
                     </div>
-                    <span className="text-xl font-black tracking-tighter uppercase">f2proteinsandgroceries</span>
+                    <span className="text-lg sm:text-xl font-black tracking-tighter uppercase hidden xs:block">f2proteinsandgroceries</span>
+                    <span className="text-lg sm:text-xl font-black tracking-tighter uppercase xs:hidden">F2G</span>
                   </div>
 
                   <div className="hidden md:flex items-center gap-8">
@@ -299,8 +304,8 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-8">
-                  <div className="hidden md:flex items-center bg-line/50 px-6 py-2 border border-line group focus-within:border-ink transition-all">
+                <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+                  <div className="hidden lg:flex items-center bg-line/50 px-6 py-2 border border-line group focus-within:border-ink transition-all">
                     <Search className="w-4 h-4 text-ink/30 group-focus-within:text-ink" />
                     <input 
                       type="text" 
@@ -311,33 +316,73 @@ export default function App() {
                     />
                   </div>
                   
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    {/* Mobile search button */}
+                    <button className="lg:hidden text-ink/40 hover:text-ink transition-colors">
+                      <Search className="w-5 h-5" />
+                    </button>
+                    
                     <button 
                       onClick={() => setView('account')}
                       className="text-ink/40 hover:text-ink transition-colors"
                     >
-                      <User className="w-5 h-5" />
+                      <User className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                     <button 
                       className="relative group"
                       onClick={() => setIsCartOpen(true)}
                     >
-                      <ShoppingCart className="w-5 h-5 text-ink" />
+                      <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-ink" />
                       {cartCount > 0 && (
-                        <span className="absolute -top-2 -right-2 w-4 h-4 bg-highlight text-paper text-[8px] font-black flex items-center justify-center">
+                        <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-3 h-3 sm:w-4 sm:h-4 bg-highlight text-paper text-[6px] sm:text-[8px] font-black flex items-center justify-center">
                           {cartCount}
                         </span>
                       )}
                     </button>
+                    
+                    {/* Mobile menu button */}
+                    <button 
+                      className="md:hidden text-ink/40 hover:text-ink transition-colors"
+                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                      <Menu className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
               </div>
+              
+              {/* Mobile menu */}
+              {isMobileMenuOpen && (
+                <div className="md:hidden border-t border-line py-4">
+                  <div className="flex flex-col space-y-4">
+                    <div className="flex items-center bg-line/50 px-4 py-2 border border-line">
+                      <Search className="w-4 h-4 text-ink/30 mr-3" />
+                      <input 
+                        type="text" 
+                        placeholder="Search collection..." 
+                        className="bg-transparent border-none focus:ring-0 text-xs font-bold flex-1 placeholder:text-ink/20"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                    {['Shop', 'About', 'Journal'].map((item) => (
+                      <button 
+                        key={item} 
+                        className="text-left text-[10px] uppercase tracking-[0.25em] font-black text-ink/40 hover:text-ink transition-colors py-2"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </nav>
 
           {/* Hero Section */}
           <section className="relative pt-4 min-h-screen flex items-center overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-24 items-center py-32">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-center py-16 sm:py-20 lg:py-32 mt-16 sm:mt-20 lg:mt-24">
               <div className="relative z-10">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -630,8 +675,8 @@ export default function App() {
           </div>
         </div>
       </footer>
-    </>
-  ) : view === 'checkout' ? (
+        </>
+      ) : view === 'checkout' ? (
     <div className="flex-1 bg-paper py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <button 
@@ -1085,121 +1130,141 @@ export default function App() {
       </div>
     </div>
   ) : view === 'admin' ? (
-    <div className="flex-1 bg-paper min-h-screen flex flex-col md:flex-row">
-      {/* Admin Sidebar */}
-      <aside className="w-full md:w-80 bg-ink text-white flex flex-col">
-        <div className="p-12 border-b border-white/10">
-          <div className="flex items-center gap-4 mb-8">
-            <span className="text-3xl font-black uppercase tracking-tighter">f2proteinsandgroceries</span>
-            <div className="label-f2proteinsandgroceries border-highlight text-highlight">Admin</div>
+    <div className="flex-1 bg-paper min-h-screen flex flex-col">
+      {/* Admin Header - Mobile First */}
+      <header className="bg-ink text-white p-4 md:hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-black uppercase tracking-tighter">F2G</span>
+            <div className="text-[8px] uppercase tracking-[0.2em] font-black text-white/60">Admin</div>
           </div>
-          <div className="text-[10px] uppercase tracking-[0.3em] font-black text-white/20">System Control</div>
-        </div>
-        
-        <nav className="flex-1 p-8 space-y-2">
-          {[
-            { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
-            { id: 'orders', label: 'Orders', icon: ShoppingBag },
-            { id: 'products', label: 'Inventory', icon: Package },
-            { id: 'logistics', label: 'Logistics', icon: Truck },
-            { id: 'users', label: 'Personnel', icon: Users },
-            { id: 'settings', label: 'System', icon: Settings },
-          ].map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setAdminTab(item.id as any)}
-              className={`w-full flex items-center gap-4 px-8 py-5 transition-all ${
-                adminTab === item.id 
-                  ? 'bg-highlight text-paper' 
-                  : 'text-white/40 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <item.icon className="w-4 h-4" />
-              <span className="text-[10px] uppercase tracking-[0.2em] font-black">{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-8 border-t border-white/10">
           <button 
             onClick={() => setView('store')}
-            className="w-full flex items-center gap-4 px-8 py-5 text-white/40 hover:text-white transition-all group"
+            className="text-white/60 hover:text-white transition-colors"
           >
-            <ChevronRight className="w-4 h-4 rotate-180 group-hover:-translate-x-2 transition-transform" />
-            <span className="text-[10px] uppercase tracking-[0.2em] font-black">Exit Portal</span>
+            <X className="w-5 h-5" />
           </button>
         </div>
-      </aside>
+      </header>
 
-      {/* Admin Content */}
-      <main className="flex-1 overflow-y-auto p-12 md:p-24">
-        {adminTab === 'dashboard' ? (
-          <div className="space-y-24">
-            <header className="flex justify-between items-end border-b border-line pb-12">
-              <div>
-                <h1 className="text-7xl font-black uppercase tracking-tighter text-ink mb-4">System.</h1>
-                <p className="text-sm font-medium text-ink/40">Operational status: Optimal</p>
-              </div>
-              <div className="label-f2proteinsandgroceries text-highlight">March 12, 2026</div>
-            </header>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-              {[
-                { label: 'Total Revenue', value: `$${salesData.totalRevenue.toFixed(2)}`, icon: BarChart3 },
-                { label: 'Total Orders', value: salesData.totalOrders, icon: Package },
-                { label: 'Total Customers', value: salesData.totalCustomers, icon: Users },
-                { label: 'Low Stock', value: salesData.lowStockProducts.length, icon: AlertCircle }
-              ].map((stat, idx) => (
-                <div key={idx} className="border border-line p-10 bg-white group hover:border-highlight transition-all">
-                  <div className="w-12 h-12 bg-ink flex items-center justify-center mb-8 group-hover:bg-highlight transition-colors">
-                    <stat.icon className="w-6 h-6 text-paper" />
-                  </div>
-                  <div className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/30 mb-2">{stat.label}</div>
-                  <div className="text-5xl font-black tracking-tighter text-ink">{stat.value}</div>
-                </div>
-              ))}
+      <div className="flex flex-col md:flex-row flex-1">
+        {/* Admin Sidebar */}
+        <aside className="w-full md:w-80 bg-ink text-white flex flex-col">
+          <div className="hidden md:block p-12 border-b border-white/10">
+            <div className="flex items-center gap-4 mb-8">
+              <span className="text-3xl font-black uppercase tracking-tighter">f2proteinsandgroceries</span>
+              <div className="label-f2proteinsandgroceries border-highlight text-highlight">Admin</div>
             </div>
-
-            {/* Recent Orders Table */}
-            <section>
-              <div className="flex justify-between items-baseline mb-12">
-                <h2 className="text-4xl font-black uppercase tracking-tighter text-ink">Recent Transactions</h2>
-                <button onClick={() => setAdminTab('orders')} className="text-[10px] uppercase tracking-[0.2em] font-black text-highlight hover:tracking-[0.3em] transition-all underline underline-offset-8">View All</button>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/30 border-b border-line">
-                      <th className="pb-8">Identifier</th>
-                      <th className="pb-8">Entity</th>
-                      <th className="pb-8">Timestamp</th>
-                      <th className="pb-8">Value</th>
-                      <th className="pb-8">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-line">
-                    {orders.slice(0, 5).map((order) => (
-                      <tr key={order.id} className="group hover:bg-paper transition-colors">
-                        <td className="py-10 font-mono text-[10px] font-black text-ink">{order.id}</td>
-                        <td className="py-10 font-black uppercase tracking-tighter text-lg text-ink">Private Client</td>
-                        <td className="py-10 text-[10px] uppercase tracking-widest font-black text-ink/40">{order.date}</td>
-                        <td className="py-10 font-black tracking-tighter text-2xl text-ink">${order.total.toFixed(2)}</td>
-                        <td className="py-10">
-                          <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border ${
-                            order.status === 'delivered' ? 'border-line text-ink/20' : 'border-highlight text-highlight'
-                          }`}>
-                            {order.status.replace('-', ' ')}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
+            <div className="text-[10px] uppercase tracking-[0.3em] font-black text-white/20">System Control</div>
           </div>
-        ) : adminTab === 'products' ? (
+          
+          <nav className="flex-1 p-4 md:p-8 space-y-2">
+            {[
+              { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
+              { id: 'orders', label: 'Orders', icon: ShoppingBag },
+              { id: 'products', label: 'Inventory', icon: Package },
+              { id: 'logistics', label: 'Logistics', icon: Truck },
+              { id: 'users', label: 'Personnel', icon: Users },
+              { id: 'settings', label: 'System', icon: Settings },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setAdminTab(item.id as any)}
+                className={`w-full flex items-center gap-3 md:gap-4 px-4 md:px-8 py-3 md:py-5 transition-all ${
+                  adminTab === item.id 
+                    ? 'bg-highlight text-paper' 
+                    : 'text-white/40 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <item.icon className="w-4 h-4" />
+                <span className="text-[10px] uppercase tracking-[0.2em] font-black">{item.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="p-4 md:p-8 border-t border-white/10">
+            <button 
+              onClick={() => setView('store')}
+              className="w-full flex items-center gap-3 md:gap-4 px-4 md:px-8 py-3 md:py-5 text-white/40 hover:text-white transition-all group"
+            >
+              <ChevronRight className="w-4 h-4 rotate-180 group-hover:-translate-x-2 transition-transform" />
+              <span className="text-[10px] uppercase tracking-[0.2em] font-black">Exit Portal</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* Admin Content */}
+        <main className="flex-1 overflow-y-auto p-6 md:p-12 lg:p-24 bg-gray-50">
+          <div className="max-w-7xl mx-auto">
+            {adminTab === 'dashboard' ? (
+              <div className="space-y-16 md:space-y-24">
+                <header className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 border-b border-line pb-8 md:pb-12">
+                  <div>
+                    <h1 className="text-4xl md:text-7xl font-black uppercase tracking-tighter text-ink mb-4">System.</h1>
+                    <p className="text-sm font-medium text-ink/40">Operational status: Optimal</p>
+                  </div>
+                  <div className="label-f2proteinsandgroceries text-highlight">March 12, 2026</div>
+                </header>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
+                  {[
+                    { label: 'Total Revenue', value: `$${salesData.totalRevenue.toFixed(2)}`, icon: BarChart3 },
+                    { label: 'Total Orders', value: salesData.totalOrders, icon: Package },
+                    { label: 'Total Customers', value: salesData.totalCustomers, icon: Users },
+                    { label: 'Low Stock', value: salesData.lowStockProducts.length, icon: AlertCircle }
+                  ].map((stat, idx) => (
+                    <div key={idx} className="border border-line p-6 md:p-10 bg-white group hover:border-highlight transition-all">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-ink flex items-center justify-center mb-6 md:mb-8 group-hover:bg-highlight transition-colors">
+                        <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-paper" />
+                      </div>
+                      <div className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/30 mb-2">{stat.label}</div>
+                      <div className="text-3xl md:text-5xl font-black tracking-tighter text-ink">{stat.value}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Recent Orders Table */}
+                <section>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-4 mb-8 md:mb-12">
+                    <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter text-ink">Recent Transactions</h2>
+                    <button onClick={() => setAdminTab('orders')} className="text-[10px] uppercase tracking-[0.2em] font-black text-highlight hover:tracking-[0.3em] transition-all underline underline-offset-8">View All</button>
+                  </div>
+                  <div className="bg-white border border-line rounded-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                          <tr className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/30 border-b border-line">
+                            <th className="p-4 md:pb-8">Identifier</th>
+                            <th className="p-4 md:pb-8">Entity</th>
+                            <th className="p-4 md:pb-8">Timestamp</th>
+                            <th className="p-4 md:pb-8">Value</th>
+                            <th className="p-4 md:pb-8">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-line">
+                          {orders.slice(0, 5).map((order) => (
+                            <tr key={order.id} className="group hover:bg-gray-50 transition-colors">
+                              <td className="p-4 md:py-10 font-mono text-[10px] font-black text-ink">{order.id}</td>
+                              <td className="p-4 md:py-10 font-black uppercase tracking-tighter text-sm md:text-lg text-ink">Private Client</td>
+                              <td className="p-4 md:py-10 text-[10px] uppercase tracking-widest font-black text-ink/40">{order.date}</td>
+                              <td className="p-4 md:py-10 font-black tracking-tighter text-lg md:text-2xl text-ink">${order.total.toFixed(2)}</td>
+                              <td className="p-4 md:py-10">
+                                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border ${
+                                  order.status === 'delivered' ? 'border-line text-ink/20' : 'border-highlight text-highlight'
+                                }`}>
+                                  {order.status.replace('-', ' ')}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            ) : adminTab === 'products' ? (
           <div className="space-y-24">
             <header className="flex justify-between items-end border-b border-line pb-12">
               <div>
@@ -1208,7 +1273,7 @@ export default function App() {
               </div>
               <button 
                 onClick={() => setIsAddingProduct(true)}
-                className="btn-elite px-12 py-6"
+                className="btn-f2proteinsandgroceries px-12 py-6"
               >
                 Add Selection
               </button>
@@ -1532,6 +1597,7 @@ export default function App() {
             </section>
           </div>
         ) : null}
+      </div>
       </main>
 
       {/* Edit Product Modal */}
@@ -1715,7 +1781,7 @@ export default function App() {
         </button>
       </motion.div>
     </div>
-  )}
+  ) : null
 
       {/* Cart Drawer */}
       <AnimatePresence>
@@ -1733,37 +1799,31 @@ export default function App() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col"
+              className="fixed right-0 top-0 h-full w-full max-w-md bg-paper shadow-2xl z-50 overflow-y-auto"
             >
-              <div className="p-12 border-b border-line flex items-center justify-between bg-white sticky top-0 z-10">
-                <div className="flex items-center gap-4">
-                  <div className="bg-ink p-3">
-                    <ShoppingCart className="w-6 h-6 text-paper" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-black uppercase tracking-tighter text-ink">Selection.</h2>
-                    <p className="text-[10px] text-ink/30 font-black uppercase tracking-widest">{cartCount} Items Curated</p>
-                  </div>
-                </div>
+              <div className="sticky top-0 bg-paper border-b border-line p-6 flex justify-between items-center z-10">
+                <h3 className="text-2xl font-black tracking-tighter uppercase">Selection</h3>
                 <button 
                   onClick={() => setIsCartOpen(false)}
-                  className="p-4 hover:bg-paper transition-all"
+                  className="text-ink/40 hover:text-ink transition-colors"
                 >
-                  <X className="w-6 h-6 text-ink/20" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
-
-              <div className="flex-1 overflow-y-auto p-12 space-y-12 no-scrollbar">
+              
+              <div className="p-6">
                 {cart.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center">
-                    <div className="w-24 h-24 bg-paper flex items-center justify-center mb-12">
-                      <ShoppingBasket className="w-10 h-10 text-ink/10" />
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 border-2 border-dashed border-line rounded-2xl flex items-center justify-center mx-auto mb-6">
+                      <ShoppingBag className="w-8 h-8 text-ink/20" />
                     </div>
-                    <h3 className="text-4xl font-black uppercase tracking-tighter mb-4">Empty.</h3>
-                    <p className="text-sm font-medium text-ink/30 mb-12">Your selection is currently void.</p>
+                    <p className="text-ink/30 text-sm font-medium mb-8">Your selection is empty</p>
                     <button 
-                      onClick={() => setIsCartOpen(false)}
-                      className="btn-elite px-12 py-6"
+                      onClick={() => {
+                        setIsCartOpen(false);
+                        setView('store');
+                      }}
+                      className="w-full btn-elite py-4 text-sm font-black"
                     >
                       Start Selection
                     </button>
@@ -1772,90 +1832,91 @@ export default function App() {
                   cart.map((item) => (
                     <motion.div 
                       layout
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      key={item.id} 
-                      className="flex gap-8 group"
+                      key={item.id}
+                      className="bg-paper border border-line rounded-3xl p-6 mb-6"
                     >
-                      <div className="w-32 h-32 bg-paper overflow-hidden border border-line flex-shrink-0">
-                        <img 
-                          src={item.image} 
-                          alt={item.name} 
-                          className="w-full h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
-                      <div className="flex-1 flex flex-col justify-between py-2">
-                        <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-black text-ink text-xl uppercase tracking-tighter leading-tight">{item.name}</h4>
-                            <button 
-                              onClick={() => removeFromCart(item.id)}
-                              className="text-ink/20 hover:text-highlight transition-colors p-1"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                          <p className="text-[10px] text-ink/30 font-black uppercase tracking-widest">${item.price} / {item.unit}</p>
+                      <div className="flex gap-6">
+                        <div className="w-20 h-20 bg-line rounded-2xl overflow-hidden flex-shrink-0">
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center border border-line">
-                            <button 
-                              onClick={() => updateQuantity(item.id, -1)}
-                              className="px-4 py-2 hover:bg-paper transition-colors"
-                            >
-                              <Minus className="w-3 h-3" />
-                            </button>
-                            <span className="text-[10px] font-black w-6 text-center text-ink">{item.quantity}</span>
-                            <button 
-                              onClick={() => updateQuantity(item.id, 1)}
-                              className="px-4 py-2 hover:bg-paper transition-colors"
-                            >
-                              <Plus className="w-3 h-3" />
-                            </button>
+                        <div className="flex-1">
+                          <h4 className="font-black text-ink text-lg uppercase tracking-tighter mb-2">{item.name}</h4>
+                          <p className="text-ink/40 text-xs font-medium mb-4">{item.unit}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <button 
+                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                className="w-8 h-8 rounded-full border border-line flex items-center justify-center hover:bg-line transition-colors"
+                              >
+                                <Minus className="w-4 h-4" />
+                              </button>
+                              <span className="font-black text-xl w-8 text-center">{item.quantity}</span>
+                              <button 
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                className="w-8 h-8 rounded-full border border-line flex items-center justify-center hover:bg-line transition-colors"
+                              >
+                                <Plus className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-black text-xl">
+                                ${((item.discount ? item.price * (1 - item.discount / 100) : item.price) * item.quantity).toFixed(2)}
+                              </div>
+                              <button 
+                                onClick={() => removeFromCart(item.id)}
+                                className="text-[10px] uppercase tracking-widest font-black text-ink/20 hover:text-red-500 transition-colors"
+                              >
+                                Remove
+                              </button>
+                            </div>
                           </div>
-                          <span className="text-2xl font-black tracking-tighter text-ink">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </span>
                         </div>
                       </div>
                     </motion.div>
                   ))
                 )}
+                
+                {cart.length > 0 && (
+                  <>
+                    <div className="border-t border-line pt-6 mt-6">
+                      <div className="space-y-4 mb-8">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-ink/40 font-medium">Subtotal</span>
+                          <span className="font-black">${cartTotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-ink/40 font-medium">Delivery</span>
+                          <span className="font-black">FREE</span>
+                        </div>
+                        <div className="flex justify-between text-lg pt-4 border-t border-line">
+                          <span className="font-black uppercase tracking-tighter">Total</span>
+                          <span className="font-black text-xl">${cartTotal.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => {
+                          setIsCartOpen(false);
+                          setView('checkout');
+                        }}
+                        className="w-full btn-elite py-6 text-sm font-black flex items-center justify-center gap-4"
+                      >
+                        Proceed to Checkout
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
-
-              {cart.length > 0 && (
-                <div className="p-12 border-t border-line bg-white">
-                  <div className="space-y-4 mb-12">
-                    <div className="flex justify-between text-ink/40 font-black text-[10px] uppercase tracking-widest">
-                      <span>Subtotal</span>
-                      <span className="text-ink">${cartTotal.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-ink/40 font-black text-[10px] uppercase tracking-widest">
-                      <span>Logistics</span>
-                      <span className="text-highlight">Complimentary</span>
-                    </div>
-                    <div className="flex justify-between text-5xl font-black tracking-tighter text-ink pt-8 border-t border-line">
-                      <span>Total</span>
-                      <span>${cartTotal.toFixed(2)}</span>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => {
-                      setIsCartOpen(false);
-                      setView('checkout');
-                    }}
-                    className="w-full btn-elite py-8 text-sm font-black"
-                  >
-                    Initiate Checkout
-                  </button>
-                </div>
-              )}
             </motion.div>
           </>
         )}
       </AnimatePresence>
+
       {/* Product Details Modal */}
       <AnimatePresence>
         {selectedProduct && (
@@ -1884,108 +1945,160 @@ export default function App() {
               <div className="md:w-1/2 h-80 md:h-auto bg-paper relative overflow-hidden">
                 <img 
                   src={selectedProduct.image} 
-                  alt={selectedProduct.name} 
+                  alt={selectedProduct.name}
                   className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
                 />
                 {selectedProduct.discount && (
-                  <div className="absolute top-8 left-8 bg-highlight text-white text-[10px] font-black px-6 py-2 uppercase tracking-widest shadow-2xl">
-                    {selectedProduct.discount}% Reduction
+                  <div className="absolute top-8 left-8 bg-highlight text-paper px-6 py-3 text-[10px] font-black uppercase tracking-widest">
+                    -{selectedProduct.discount}%
                   </div>
                 )}
               </div>
 
               {/* Content Section */}
-              <div className="flex-1 overflow-y-auto p-12 md:p-16 no-scrollbar">
-                <div className="mb-12">
-                  <div className="flex items-center gap-3 text-highlight font-black text-[10px] uppercase tracking-[0.3em] mb-4">
-                    <Leaf className="w-4 h-4" />
-                    {selectedProduct.category}
-                  </div>
-                  <h2 className="text-5xl md:text-6xl font-black text-ink uppercase tracking-tighter mb-6">{selectedProduct.name}</h2>
-                  <div className="flex flex-wrap items-center gap-8 mb-10">
-                    <div className="flex items-center gap-2 text-highlight">
-                      {[1,2,3,4,5].map(i => (
-                        <Star key={i} className={`w-4 h-4 ${i <= 4 ? 'fill-current' : 'text-ink/10'}`} />
-                      ))}
-                      <span className="ml-2 text-[10px] font-black text-ink/30 uppercase tracking-widest">4.8 (120 reviews)</span>
+              <div className="md:w-1/2 p-12 overflow-y-auto">
+                <div className="space-y-12">
+                  <div>
+                    <h2 className="text-4xl font-black uppercase tracking-tighter leading-none mb-6">{selectedProduct.name}</h2>
+                    <div className="flex items-center gap-6 mb-8">
+                      <div className="flex items-center gap-2 text-highlight">
+                        {[1,2,3,4,5].map(i => (
+                          <Star key={i} className={`w-5 h-5 ${i <= 4 ? 'fill-current' : 'text-ink/10'}`} />
+                        ))}
+                      </div>
+                      <span className="text-[10px] uppercase tracking-widest font-black text-ink/30">4.9 / 5.0 (128 Reviews)</span>
                     </div>
-                    <div className={`text-[10px] font-black uppercase tracking-widest px-4 py-1 border ${selectedProduct.stock > 10 ? 'border-line text-ink/40' : 'border-highlight text-highlight'}`}>
-                      {selectedProduct.stock > 0 ? `${selectedProduct.stock} Units Available` : 'Out of stock'}
-                    </div>
-                  </div>
-                  <p className="text-ink/60 leading-relaxed text-xl font-medium">{selectedProduct.description}</p>
-                </div>
-
-                {/* Nutritional Info */}
-                {selectedProduct.nutritionalInfo && (
-                  <div className="mb-12 p-10 bg-paper border border-line">
-                    <h4 className="font-black text-ink mb-8 text-[10px] uppercase tracking-[0.2em]">Nutritional Profile</h4>
-                    <div className="grid grid-cols-4 gap-8">
-                      {Object.entries(selectedProduct.nutritionalInfo).map(([key, value]) => (
-                        <div key={key} className="text-center">
-                          <div className="text-2xl font-black text-ink tracking-tighter">{value}</div>
-                          <div className="text-[10px] font-black text-ink/30 uppercase tracking-widest mt-1">{key}</div>
+                    <p className="text-ink/60 text-lg leading-relaxed mb-8">{selectedProduct.description}</p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
+                          <Leaf className="w-6 h-6 text-emerald-600" />
                         </div>
-                      ))}
+                        <div>
+                          <div className="font-black text-ink">100% Organic</div>
+                          <div className="text-sm text-ink/40">Certified organic farming practices</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                          <Droplet className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <div className="font-black text-ink">Fresh Daily</div>
+                          <div className="text-sm text-ink/40">Harvested and delivered within 24 hours</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                          <Award className="w-6 h-6 text-purple-600" />
+                        </div>
+                        <div>
+                          <div className="font-black text-ink">Premium Quality</div>
+                          <div className="text-sm text-ink/40">Hand-picked for optimal freshness and taste</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                )}
 
-                {/* Reviews Preview */}
-                <div className="mb-12">
-                  <h4 className="font-black text-ink mb-8 text-[10px] uppercase tracking-[0.2em]">Personnel Feedback</h4>
-                  <div className="space-y-8">
-                    {selectedProduct.reviews.length > 0 ? (
-                      selectedProduct.reviews.map(review => (
-                        <div key={review.id} className="border-b border-line pb-8 last:border-0">
-                          <div className="flex justify-between items-center mb-4">
-                            <span className="font-black text-ink uppercase tracking-tighter text-lg">{review.user}</span>
-                            <span className="text-[10px] font-black text-ink/30 uppercase tracking-widest">{review.date}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-highlight mb-4">
-                            {[1,2,3,4,5].map(i => (
-                              <Star key={i} className={`w-3 h-3 ${i <= review.rating ? 'fill-current' : 'text-ink/10'}`} />
-                            ))}
-                          </div>
-                          <p className="text-ink/60 text-sm leading-relaxed">{review.comment}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-ink/30 text-[10px] uppercase tracking-widest font-black">No feedback recorded yet.</p>
-                    )}
+                  <div>
+                    <h4 className="font-black text-ink mb-8 text-[10px] uppercase tracking-[0.2em]">Nutritional Information</h4>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="bg-paper p-6 rounded-2xl border border-line">
+                        <div className="text-3xl font-black text-highlight mb-2">156</div>
+                        <div className="text-[10px] uppercase tracking-widest font-black text-ink/30">Calories per 100g</div>
+                      </div>
+                      <div className="bg-paper p-6 rounded-2xl border border-line">
+                        <div className="text-3xl font-black text-highlight mb-2">8.2g</div>
+                        <div className="text-[10px] uppercase tracking-widest font-black text-ink/30">Protein per 100g</div>
+                      </div>
+                      <div className="bg-paper p-6 rounded-2xl border border-line">
+                        <div className="text-3xl font-black text-highlight mb-2">12.5g</div>
+                        <div className="text-[10px] uppercase tracking-widest font-black text-ink/30">Carbs per 100g</div>
+                      </div>
+                      <div className="bg-paper p-6 rounded-2xl border border-line">
+                        <div className="text-3xl font-black text-highlight mb-2">0.2g</div>
+                        <div className="text-[10px] uppercase tracking-widest font-black text-ink/30">Fat per 100g</div>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Action Bar */}
-                <div className="sticky bottom-0 bg-white pt-8 border-t border-line flex flex-col sm:flex-row items-center gap-8">
-                  <div className="flex items-center border border-line">
-                    <button 
-                      onClick={() => setDetailQuantity(Math.max(1, detailQuantity - 1))}
-                      className="p-6 hover:bg-paper transition-colors"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="w-12 text-center font-black text-xl">{detailQuantity}</span>
-                    <button 
-                      onClick={() => setDetailQuantity(detailQuantity + 1)}
-                      className="p-6 hover:bg-paper transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
+                  <div>
+                    <h4 className="font-black text-ink mb-8 text-[10px] uppercase tracking-[0.2em]">Origin & Sustainability</h4>
+                    <div className="space-y-6">
+                      <div className="flex justify-between items-center py-4 border-b border-line">
+                        <span className="text-sm font-medium text-ink/60">Farm Origin</span>
+                        <span className="font-black text-ink">Local Green Valley Farm</span>
+                      </div>
+                      <div className="flex justify-between items-center py-4 border-b border-line">
+                        <span className="text-sm font-medium text-ink/60">Distance</span>
+                        <span className="font-black text-ink">42 km from store</span>
+                      </div>
+                      <div className="flex justify-between items-center py-4 border-b border-line">
+                        <span className="text-sm font-medium text-ink/60">Carbon Footprint</span>
+                        <span className="font-black text-emerald-600">Low Impact</span>
+                      </div>
+                      <div className="flex justify-between items-center py-4 border-b border-line">
+                        <span className="text-sm font-medium text-ink/60">Packaging</span>
+                        <span className="font-black text-ink">100% Compostable</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 w-full">
-                    <button 
-                      onClick={() => {
-                        addToCart(selectedProduct, detailQuantity);
-                        setSelectedProduct(null);
-                      }}
-                      className="w-full btn-elite py-8 text-sm font-black flex items-center justify-center gap-4"
-                    >
-                      Add to Selection
-                      <span className="opacity-40">|</span>
-                      <span>${( (selectedProduct.discount ? selectedProduct.price * (1 - selectedProduct.discount / 100) : selectedProduct.price) * detailQuantity).toFixed(2)}</span>
-                    </button>
+
+                  <div>
+                    <h4 className="font-black text-ink mb-8 text-[10px] uppercase tracking-[0.2em]">Personnel Feedback</h4>
+                    <div className="space-y-8">
+                      {selectedProduct.reviews.length > 0 ? (
+                        selectedProduct.reviews.map(review => (
+                          <div key={review.id} className="border-b border-line pb-8 last:border-0">
+                            <div className="flex justify-between items-center mb-4">
+                              <span className="font-black text-ink uppercase tracking-tighter text-lg">{review.user}</span>
+                              <span className="text-[10px] font-black text-ink/30 uppercase tracking-widest">{review.date}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-highlight mb-4">
+                              {[1,2,3,4,5].map(i => (
+                                <Star key={i} className={`w-3 h-3 ${i <= review.rating ? 'fill-current' : 'text-ink/10'}`} />
+                              ))}
+                            </div>
+                            <p className="text-ink/60 text-sm leading-relaxed">{review.comment}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-ink/30 text-[10px] uppercase tracking-widest font-black">No feedback recorded yet.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action Bar */}
+                  <div className="sticky bottom-0 bg-white pt-8 border-t border-line flex flex-col sm:flex-row items-center gap-8">
+                    <div className="flex items-center border border-line">
+                      <button 
+                        onClick={() => setDetailQuantity(Math.max(1, detailQuantity - 1))}
+                        className="p-6 hover:bg-paper transition-colors"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="w-12 text-center font-black text-xl">{detailQuantity}</span>
+                      <button 
+                        onClick={() => setDetailQuantity(detailQuantity + 1)}
+                        className="p-6 hover:bg-paper transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="flex-1 w-full">
+                      <button 
+                        onClick={() => {
+                          addToCart(selectedProduct, detailQuantity);
+                          setSelectedProduct(null);
+                        }}
+                        className="w-full btn-elite py-8 text-sm font-black flex items-center justify-center gap-4"
+                      >
+                        Add to Selection
+                        <span className="opacity-40">|</span>
+                        <span>${( (selectedProduct.discount ? selectedProduct.price * (1 - selectedProduct.discount / 100) : selectedProduct.price) * detailQuantity).toFixed(2)}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1994,5 +2107,7 @@ export default function App() {
         )}
       </AnimatePresence>
     </div>
+  ) : null}
+  </div>
   );
 }
