@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { 
   X, 
   ChevronRight, 
@@ -126,13 +127,72 @@ export default function AdminPage({
                     { label: 'Total Customers', value: salesData.totalCustomers, icon: Users },
                     { label: 'Low Stock', value: salesData.lowStockProducts.length, icon: AlertCircle }
                   ].map((stat, idx) => (
-                    <div key={idx} className="border border-line p-6 md:p-10 bg-white group hover:border-highlight transition-all">
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-ink flex items-center justify-center mb-6 md:mb-8 group-hover:bg-highlight transition-colors">
-                        <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-paper" />
-                      </div>
-                      <div className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/30 mb-2">{stat.label}</div>
-                      <div className="text-3xl md:text-5xl font-black tracking-tighter text-ink">{stat.value}</div>
-                    </div>
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: idx * 0.1, duration: 0.6, type: "spring", stiffness: 200 }}
+                      whileHover={{ y: -10, scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="border border-line p-6 md:p-10 bg-white group hover:border-highlight transition-all duration-300 relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl"
+                    >
+                      {/* Hover Glow Effect */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 0.1 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute inset-0 bg-gradient-to-tr from-highlight/20 via-transparent to-ink/10"
+                      />
+                      
+                      <motion.div 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: idx * 0.1 + 0.2, type: "spring", stiffness: 200 }}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        className="w-10 h-10 md:w-12 md:h-12 bg-ink flex items-center justify-center mb-6 md:mb-8 group-hover:bg-highlight transition-all duration-300 rounded-xl shadow-md group-hover:shadow-lg relative z-10"
+                      >
+                        <motion.div
+                          animate={{ rotate: [0, 5, -5, 0] }}
+                          transition={{ duration: 3, delay: idx * 0.5, repeat: Infinity, repeatType: "reverse" }}
+                        >
+                          <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-paper" />
+                        </motion.div>
+                      </motion.div>
+                      
+                      <motion.div 
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 + 0.3 }}
+                        className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/30 mb-2 group-hover:text-ink/40 transition-colors duration-300 relative z-10"
+                      >
+                        {stat.label}
+                      </motion.div>
+                      
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: idx * 0.1 + 0.4, type: "spring", stiffness: 200 }}
+                        className="text-3xl md:text-5xl font-black tracking-tighter text-ink group-hover:text-highlight transition-colors duration-300 relative z-10"
+                      >
+                        {stat.value}
+                      </motion.div>
+                      
+                      {/* Floating Indicator */}
+                      {stat.label === 'Low Stock' && salesData.lowStockProducts.length > 0 && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 1, type: "spring", stiffness: 300 }}
+                          className="absolute top-2 right-2 w-2 h-2 bg-highlight rounded-full"
+                        >
+                          <motion.div
+                            animate={{ scale: [1, 1.5, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="w-2 h-2 bg-highlight rounded-full"
+                          />
+                        </motion.div>
+                      )}
+                    </motion.div>
                   ))}
                 </div>
 
@@ -155,20 +215,66 @@ export default function AdminPage({
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-line">
-                          {orders.slice(0, 5).map((order) => (
-                            <tr key={order.id} className="group hover:bg-gray-50 transition-colors">
-                              <td className="p-4 md:py-10 font-mono text-[10px] font-black text-ink">{order.id}</td>
-                              <td className="p-4 md:py-10 font-black uppercase tracking-tighter text-sm md:text-lg text-ink">Private Client</td>
-                              <td className="p-4 md:py-10 text-[10px] uppercase tracking-widest font-black text-ink/40">{order.date}</td>
-                              <td className="p-4 md:py-10 font-black tracking-tighter text-lg md:text-2xl text-ink">${order.total.toFixed(2)}</td>
-                              <td className="p-4 md:py-10">
-                                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border ${
-                                  order.status === 'delivered' ? 'border-line text-ink/20' : 'border-highlight text-highlight'
-                                }`}>
+                          {orders.slice(0, 5).map((order, idx) => (
+                            <motion.tr 
+                              key={order.id} 
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: idx * 0.1, duration: 0.5 }}
+                              whileHover={{ backgroundColor: "#f9f9f9", x: 5 }}
+                              className="group transition-all duration-300"
+                            >
+                              <motion.td 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: idx * 0.1 + 0.1 }}
+                                className="p-4 md:py-10 font-mono text-[10px] font-black text-ink group-hover:text-highlight transition-colors duration-300"
+                              >
+                                {order.id}
+                              </motion.td>
+                              <motion.td 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: idx * 0.1 + 0.2 }}
+                                className="p-4 md:py-10 font-black uppercase tracking-tighter text-sm md:text-lg text-ink"
+                              >
+                                Private Client
+                              </motion.td>
+                              <motion.td 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: idx * 0.1 + 0.3 }}
+                                className="p-4 md:py-10 text-[10px] uppercase tracking-widest font-black text-ink/40 group-hover:text-ink/60 transition-colors duration-300"
+                              >
+                                {order.date}
+                              </motion.td>
+                              <motion.td 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: idx * 0.1 + 0.4 }}
+                                whileHover={{ scale: 1.05 }}
+                                className="p-4 md:py-10 font-black tracking-tighter text-lg md:text-2xl text-ink group-hover:text-highlight transition-all duration-300"
+                              >
+                                ${order.total.toFixed(2)}
+                              </motion.td>
+                              <motion.td 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: idx * 0.1 + 0.5 }}
+                                className="p-4 md:py-10"
+                              >
+                                <motion.span 
+                                  whileHover={{ scale: 1.1 }}
+                                  className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border transition-all duration-300 ${
+                                    order.status === 'delivered' 
+                                      ? 'border-line text-ink/20 group-hover:border-ink/40 group-hover:text-ink/40' 
+                                      : 'border-highlight text-highlight group-hover:shadow-lg'
+                                  }`}
+                                >
                                   {order.status.replace('-', ' ')}
-                                </span>
-                              </td>
-                            </tr>
+                                </motion.span>
+                              </motion.td>
+                            </motion.tr>
                           ))}
                         </tbody>
                       </table>
@@ -204,48 +310,102 @@ export default function AdminPage({
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-line">
-                        {products.map((product) => (
-                          <tr key={product.id} className="group hover:bg-paper transition-colors">
-                            <td className="p-10">
+                        {products.map((product, idx) => (
+                          <motion.tr 
+                            key={product.id} 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.05, duration: 0.4 }}
+                            whileHover={{ backgroundColor: "#fafafa", x: 5 }}
+                            className="group transition-all duration-300"
+                          >
+                            <motion.td 
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: idx * 0.05 + 0.1 }}
+                              className="p-10"
+                            >
                               <div className="flex items-center gap-8">
-                                <div className="w-20 h-20 bg-paper overflow-hidden">
+                                <motion.div 
+                                  whileHover={{ scale: 1.1, rotate: 2 }}
+                                  className="w-20 h-20 bg-paper overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-all duration-300"
+                                >
                                   <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                                </div>
+                                </motion.div>
                                 <div>
-                                  <div className="font-black uppercase tracking-tighter text-2xl text-ink mb-1">{product.name}</div>
+                                  <motion.div 
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.05 + 0.2 }}
+                                    className="font-black uppercase tracking-tighter text-2xl text-ink mb-1 group-hover:text-highlight transition-colors duration-300"
+                                  >
+                                    {product.name}
+                                  </motion.div>
                                   <div className="text-[10px] uppercase tracking-widest font-black text-ink/30">{product.unit}</div>
                                 </div>
                               </div>
-                            </td>
-                            <td className="p-10">
-                              <span className="text-[10px] uppercase tracking-widest font-black text-ink/40 px-3 py-1 bg-line">
+                            </motion.td>
+                            <motion.td 
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: idx * 0.05 + 0.3 }}
+                              whileHover={{ scale: 1.05 }}
+                              className="p-10"
+                            >
+                              <span className="text-[10px] uppercase tracking-widest font-black text-ink/40 px-3 py-1 bg-line group-hover:bg-highlight/20 group-hover:text-highlight transition-all duration-300">
                                 {product.category}
                               </span>
-                            </td>
-                            <td className="p-10 font-black tracking-tighter text-2xl text-ink">${product.price.toFixed(2)}</td>
-                            <td className="p-10">
+                            </motion.td>
+                            <motion.td 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: idx * 0.05 + 0.4 }}
+                              whileHover={{ scale: 1.05 }}
+                              className="p-10 font-black tracking-tighter text-2xl text-ink group-hover:text-highlight transition-all duration-300"
+                            >
+                              ${product.price.toFixed(2)}
+                            </motion.td>
+                            <motion.td 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: idx * 0.05 + 0.5 }}
+                              className="p-10"
+                            >
                               <div className="flex items-center gap-4">
-                                <div className={`w-2 h-2 ${product.stock > 10 ? 'bg-ink' : 'bg-highlight'}`} />
-                                <span className="text-[10px] uppercase tracking-widest font-black text-ink/40">{product.stock} Units</span>
+                                <motion.div
+                                  animate={{ scale: [1, 1.2, 1] }}
+                                  transition={{ duration: 2, delay: idx * 0.2, repeat: Infinity }}
+                                  className={`w-2 h-2 ${product.stock > 10 ? 'bg-ink' : 'bg-highlight'} rounded-full`}
+                                />
+                                <span className="text-[10px] uppercase tracking-widest font-black text-ink/40 group-hover:text-ink/60 transition-colors duration-300">{product.stock} Units</span>
                               </div>
-                            </td>
-                            <td className="p-10 text-right">
+                            </motion.td>
+                            <motion.td 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: idx * 0.05 + 0.6 }}
+                              className="p-10 text-right"
+                            >
                               <div className="flex justify-end gap-8">
-                                <button 
+                                <motion.button 
+                                  whileHover={{ scale: 1.1, y: -2 }}
+                                  whileTap={{ scale: 0.9 }}
                                   onClick={() => onEditProduct(product)}
-                                  className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/40 hover:text-ink transition-colors"
+                                  className="text-[10px] uppercase tracking-[0.2em] font-black text-ink/40 hover:text-ink transition-all duration-300"
                                 >
                                   Edit
-                                </button>
-                                <button 
+                                </motion.button>
+                                <motion.button 
+                                  whileHover={{ scale: 1.1, y: -2 }}
+                                  whileTap={{ scale: 0.9 }}
                                   onClick={() => onDeleteProduct(product.id)}
-                                  className="text-[10px] uppercase tracking-[0.2em] font-black text-highlight/40 hover:text-highlight transition-colors"
+                                  className="text-[10px] uppercase tracking-[0.2em] font-black text-highlight/40 hover:text-highlight transition-all duration-300"
                                 >
                                   Delete
-                                </button>
+                                </motion.button>
                               </div>
-                            </td>
-                          </tr>
+                            </motion.td>
+                          </motion.tr>
                         ))}
                       </tbody>
                     </table>
