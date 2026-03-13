@@ -28,6 +28,10 @@
     @apply px-10 py-4 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.3em] transition-all hover:bg-highlight hover:text-paper active:scale-[0.98] disabled:opacity-20;
   }
 
+  .btn-elite {
+    @apply px-10 py-4 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.3em] transition-all hover:bg-highlight hover:text-paper active:scale-[0.98] disabled:opacity-20;
+  }
+
   .card-f2proteinsandgroceries {
     @apply bg-white border border-line p-8 transition-all hover:border-ink hover:shadow-[20px_20px_0px_rgba(0,0,0,0.02)];
   }
@@ -47,6 +51,14 @@
   .grid-cell {
     @apply border-line border-r border-b p-8;
   }
+
+  /* Particle positioning utilities */
+  .particle-1 { @apply top-[20%] left-[10%]; }
+  .particle-2 { @apply top-[35%] left-[22%]; }
+  .particle-3 { @apply top-[50%] left-[34%]; }
+  .particle-4 { @apply top-[65%] left-[46%]; }
+  .particle-5 { @apply top-[80%] left-[58%]; }
+  .particle-6 { @apply top-[95%] left-[70%]; }
 
   /* Mobile navbar optimizations */
   @media (max-width: 640px) {

@@ -1,7 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
 
 import React, { useState, useMemo } from 'react';
 import { 
@@ -32,9 +28,11 @@ import SuccessPage from './pages/SuccessPage';
 import AccountPage from './pages/AccountPage';
 import TrackingPage from './pages/TrackingPage';
 import AdminPage from './pages/AdminPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
 export default function App() {
-  const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin'>('store');
+  const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact'>('store');
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [categories, setCategories] = useState<string[]>(CATEGORIES);
   const [customers, setCustomers] = useState<UserType[]>([
@@ -333,6 +331,14 @@ export default function App() {
           onDeleteProduct={handleDeleteProduct}
           onAddProduct={() => setIsAddingProduct(true)}
         />
+      )}
+      
+      {view === 'about' && (
+        <AboutPage setView={setView} />
+      )}
+      
+      {view === 'contact' && (
+        <ContactPage setView={setView} />
       )}
 
       {/* Product Detail Modal */}
