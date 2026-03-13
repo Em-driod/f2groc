@@ -15,7 +15,8 @@ import {
   Save,
   Droplet,
   Award,
-  Heart
+  Heart,
+  User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS, CATEGORIES, DELIVERY_ZONES, RIDERS } from './constants';
@@ -563,6 +564,61 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Fixed Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-line shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-around items-center py-3">
+            <button
+              onClick={() => setView('store')}
+              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
+                view === 'store' 
+                  ? 'bg-highlight text-paper' 
+                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
+              }`}
+            >
+              <ShoppingBasket className="w-5 h-5" />
+              <span className="text-[10px] font-black uppercase tracking-wider">Shop</span>
+            </button>
+            
+            <button
+              onClick={() => setView('about')}
+              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
+                view === 'about' 
+                  ? 'bg-highlight text-paper' 
+                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
+              }`}
+            >
+              <Tag className="w-5 h-5" />
+              <span className="text-[10px] font-black uppercase tracking-wider">About</span>
+            </button>
+            
+            <button
+              onClick={() => setView('contact')}
+              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
+                view === 'contact' 
+                  ? 'bg-highlight text-paper' 
+                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
+              }`}
+            >
+              <Layers className="w-5 h-5" />
+              <span className="text-[10px] font-black uppercase tracking-wider">Contact</span>
+            </button>
+            
+            <button
+              onClick={() => setView('account')}
+              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
+                view === 'account' 
+                  ? 'bg-highlight text-paper' 
+                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
+              }`}
+            >
+              <User className="w-5 h-5" />
+              <span className="text-[10px] font-black uppercase tracking-wider">Account</span>
+            </button>
+          </div>
+        </div>
+      </nav>
     </div>
   );
 }
