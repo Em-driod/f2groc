@@ -118,11 +118,20 @@ export default function StorePage({
                 className="flex items-center gap-2 sm:gap-3 cursor-pointer group"
                 onClick={() => setView('store')}
               >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-ink flex items-center justify-center group-hover:bg-highlight transition-colors">
-                  <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-paper" />
-                </div>
-                <span className="text-lg sm:text-xl font-black tracking-tighter uppercase hidden xs:block">f2proteinsandgroceries</span>
-                <span className="text-lg sm:text-xl font-black tracking-tighter uppercase xs:hidden">F2G</span>
+                <img 
+                  src="/logo.jpeg" 
+                  alt="F2 Protein & Groceries Logo" 
+                  className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 object-contain group-hover:scale-110 transition-transform rounded-2xl"
+                  referrerPolicy="no-referrer"
+                />
+                <span className="text-lg sm:text-xl font-black tracking-tighter uppercase hidden xs:block">
+                  <span className="text-amber-800">f2</span>
+                  <span className="text-orange-500">proteinsandgroceries</span>
+                </span>
+                <span className="text-lg sm:text-xl font-black tracking-tighter uppercase xs:hidden">
+                  <span className="text-amber-800">F2</span>
+                  <span className="text-orange-500">G</span>
+                </span>
               </div>
 
               <div className="hidden md:flex items-center gap-8">
