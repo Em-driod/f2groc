@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingBag, 
   Search, 
@@ -8,10 +8,17 @@ import {
   Menu,
   Star,
   ArrowRight,
-  Plus
+  ChevronRight,
+  Plus,
+  Leaf,
+  Truck,
+  Clock,
+  Award
 } from 'lucide-react';
+
 import { PRODUCTS, CATEGORIES } from '../constants';
 import { Product, CartItem, Category } from '../types';
+import F2ProteinSection from '../components/F2ProteinSection';
 
 interface StorePageProps {
   searchQuery: string;
@@ -45,8 +52,17 @@ export default function StorePage({
   setView
 }: StorePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [promoSlide, setPromoSlide] = useState(0);
   const [isAutoScroll, setIsAutoScroll] = useState(true);
+  const [promoSlide, setPromoSlide] = useState(0);
+  const [mobileFeatureIndex, setMobileFeatureIndex] = useState(0);
+  const [shouldAnimateBackground, setShouldAnimateBackground] = useState(false);
+
+  const mobileFeatures = [
+    { id: 1, icon: Leaf, title: 'Fresh', subtitle: 'We use handpicked, locally sourced ingredients for every mea' },
+    { id: 2, icon: Award, title: 'Organic', subtitle: 'Experience nature’s harvest with our organic farm produce' },
+    { id: 3, icon: Clock, title: 'Local', subtitle: 'Your trusted neighbourhood fresh food market' },
+    { id: 4, icon: Truck, title: 'Delivery', subtitle: 'Order fresh food and get it delivered straight to your door.' }
+  ];
 
   const HERO_SLIDES = [
     {
@@ -78,12 +94,13 @@ export default function StorePage({
     }
   ];
 
+  // Mobile features auto-scroll enabled
   React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+    const mobileTimer = setInterval(() => {
+      setMobileFeatureIndex((prev) => (prev + 1) % mobileFeatures.length);
+    }, 3000);
+    return () => clearInterval(mobileTimer);
+  }, [mobileFeatures.length]);
 
   const filteredProducts = useMemo(() => {
     let result = PRODUCTS.filter(product => {
@@ -98,14 +115,7 @@ export default function StorePage({
 
   const dealProducts = useMemo(() => PRODUCTS.filter(p => p.discount), []);
 
-  React.useEffect(() => {
-    const promoTimer = setInterval(() => {
-      if (isAutoScroll) {
-        setPromoSlide((prev) => (prev + 1) % Math.ceil(dealProducts.length / 2));
-      }
-    }, 3000);
-    return () => clearInterval(promoTimer);
-  }, [dealProducts.length, isAutoScroll]);
+  // Promo auto-scroll completely removed
 
   return (
     <>
@@ -124,13 +134,9 @@ export default function StorePage({
                   className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 object-contain group-hover:scale-110 transition-transform rounded-2xl"
                   referrerPolicy="no-referrer"
                 />
-                <span className="text-lg sm:text-xl font-black tracking-tighter uppercase hidden xs:block">
-                  <span className="text-amber-800">f2</span>
-                  <span className="text-orange-500">proteinsandgroceries</span>
-                </span>
-                <span className="text-lg sm:text-xl font-black tracking-tighter uppercase xs:hidden">
-                  <span className="text-amber-800">F2</span>
-                  <span className="text-orange-500">G</span>
+                <span className="text-sm sm:text-lg sm:text-xl font-black tracking-tighter uppercase">
+                  <span className="text-amber-800">F2 Protein</span>
+                  <span className="text-orange-500">'n' Groceries</span>
                 </span>
               </div>
 
@@ -396,7 +402,302 @@ export default function StorePage({
             </button>
           ))}
         </div>
+
+        {/* Arrow Controls */}
+        <button
+          onClick={() => {
+            setIsAutoScroll(false);
+            setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+            setShouldAnimateBackground(true);
+            setTimeout(() => setShouldAnimateBackground(false), 1600);
+          }}
+          className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-highlight hover:text-white transition-all duration-300"
+        >
+          <ChevronRight className="w-5 h-5 rotate-180" />
+        </button>
+        <button
+          onClick={() => {
+            setIsAutoScroll(false);
+            setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+            setShouldAnimateBackground(true);
+            setTimeout(() => setShouldAnimateBackground(false), 1600);
+          }}
+          className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-highlight hover:text-white transition-all duration-300"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
       </section>
+
+      
+
+      {/* Elite Features Bar */}
+      <div className="relative h-32 bg-white overflow-hidden border-t border-amber-800/30 shadow-lg">
+        {/* Static Background Effects */}
+        <div className="absolute inset-0">
+          <motion.div 
+            animate={shouldAnimateBackground ? {
+              scale: 1.2,
+              rotate: 180,
+              x: 50
+            } : {
+              scale: 1,
+              rotate: 0,
+              x: 0
+            }}
+            transition={{ 
+              duration: 1.5, 
+              ease: "easeInOut"
+            }}
+            className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-amber-800/10 to-orange-500/10 rounded-full blur-3xl"
+          />
+          <motion.div 
+            animate={shouldAnimateBackground ? {
+              scale: 0.8,
+              rotate: -180,
+              y: -30
+            } : {
+              scale: 1,
+              rotate: 0,
+              y: 0
+            }}
+            transition={{ 
+              duration: 1.5, 
+              ease: "easeInOut"
+            }}
+            className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-orange-500/8 to-amber-800/8 rounded-full blur-2xl"
+          />
+        </div>
+        
+        {/* Desktop: Elite Professional Card Grid */}
+        <div className="hidden sm:flex relative z-10 h-full items-center justify-center px-4 py-4">
+          <div className="grid grid-cols-4 gap-6 max-w-6xl w-full px-4">
+            {/* Fresh Feature */}
+            <motion.div 
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+              whileHover={{ 
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
+              className="relative group"
+            >
+              <div className="bg-gradient-to-br from-white to-amber-50 rounded-2xl border border-amber-800/20 p-4 h-full flex flex-row items-center text-center relative overflow-hidden">
+                {/* Elite Background Pattern */}
+                <div className="absolute inset-0 bg-gradient-to-tl from-amber-800/5 via-transparent to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Icon Container with Premium Effects */}
+                <div className="relative mr-4">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-800 to-orange-500 rounded-full blur-sm opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
+                  <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center border border-amber-800/20">
+                    <Leaf className="w-6 h-6 text-amber-800" />
+                  </div>
+                </div>
+                
+                {/* Enhanced Text Content */}
+                <div className="flex-1 relative z-10 text-left">
+                  <h3 className="text-base font-black tracking-tight text-amber-800 uppercase leading-tight mb-1">
+                    Fresh
+                  </h3>
+                  <p className="text-xs text-amber-600 leading-relaxed font-medium">
+                    Daily Sourced
+                  </p>
+                </div>
+                
+                {/* Premium Accent Line */}
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-800 via-orange-500 to-amber-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
+              </div>
+            </motion.div>
+
+            {/* Organic Feature */}
+            <motion.div 
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+              whileHover={{ 
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
+              className="relative group"
+            >
+              <div className="bg-gradient-to-br from-white to-orange-50 rounded-2xl border border-orange-500/20 p-4 h-full flex flex-row items-center text-center relative overflow-hidden">
+                {/* Elite Background Pattern */}
+                <div className="absolute inset-0 bg-gradient-to-tl from-orange-500/5 via-transparent to-amber-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Icon Container with Premium Effects */}
+                <div className="relative mr-4">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-800 rounded-full blur-sm opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
+                  <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center border border-orange-500/20">
+                    <Award className="w-6 h-6 text-orange-500" />
+                  </div>
+                </div>
+                
+                {/* Enhanced Text Content */}
+                <div className="flex-1 relative z-10 text-left">
+                  <h3 className="text-base font-black tracking-tight text-amber-800 uppercase leading-tight mb-1">
+                    Organic
+                  </h3>
+                  <p className="text-xs text-amber-600 leading-relaxed font-medium">
+                    Certified Quality
+                  </p>
+                </div>
+                
+                {/* Premium Accent Line */}
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 via-amber-800 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
+              </div>
+            </motion.div>
+
+            {/* Local Feature */}
+            <motion.div 
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+              whileHover={{ 
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
+              className="relative group"
+            >
+              <div className="bg-gradient-to-br from-white to-amber-50 rounded-2xl border border-amber-800/20 p-4 h-full flex flex-row items-center text-center relative overflow-hidden">
+                {/* Elite Background Pattern */}
+                <div className="absolute inset-0 bg-gradient-to-tl from-amber-800/5 via-transparent to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Icon Container with Premium Effects */}
+                <div className="relative mr-4">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-800 to-orange-500 rounded-full blur-sm opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
+                  <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center border border-amber-800/20">
+                    <Clock className="w-6 h-6 text-amber-800" />
+                  </div>
+                </div>
+                
+                {/* Enhanced Text Content */}
+                <div className="flex-1 relative z-10 text-left">
+                  <h3 className="text-base font-black tracking-tight text-amber-800 uppercase leading-tight mb-1">
+                    Local
+                  </h3>
+                  <p className="text-xs text-amber-600 leading-relaxed font-medium">
+                    Community First
+                  </p>
+                </div>
+                
+                {/* Premium Accent Line */}
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-800 via-orange-500 to-amber-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
+              </div>
+            </motion.div>
+
+            {/* Delivery Feature */}
+            <motion.div 
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.4, duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+              whileHover={{ 
+                y: -8,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
+              className="relative group"
+            >
+              <div className="bg-gradient-to-br from-white to-orange-50 rounded-2xl border border-orange-500/20 p-4 h-full flex flex-row items-center text-center relative overflow-hidden">
+                {/* Elite Background Pattern */}
+                <div className="absolute inset-0 bg-gradient-to-tl from-orange-500/5 via-transparent to-amber-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Icon Container with Premium Effects */}
+                <div className="relative mr-4">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-800 rounded-full blur-sm opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
+                  <div className="relative w-12 h-12 bg-white rounded-full flex items-center justify-center border border-orange-500/20">
+                    <Truck className="w-6 h-6 text-orange-500" />
+                  </div>
+                </div>
+                
+                {/* Enhanced Text Content */}
+                <div className="flex-1 relative z-10 text-left">
+                  <h3 className="text-base font-black tracking-tight text-amber-800 uppercase leading-tight mb-1">
+                    Delivery
+                  </h3>
+                  <p className="text-xs text-amber-600 leading-relaxed font-medium">
+                    Fast & Free
+                  </p>
+                </div>
+                
+                {/* Premium Accent Line */}
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-500 via-amber-800 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center" />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Mobile: Side-by-Side Scrolling Carousel */}
+        <div className="sm:hidden relative z-10 h-full overflow-hidden">
+          <motion.div 
+            className="flex h-full items-center"
+            animate={{ x: `-${mobileFeatureIndex * 100}%` }}
+            transition={{ 
+              type: "tween", 
+              duration: 0.5, 
+              ease: [0.4, 0.0, 0.2, 1]
+            }}
+          >
+            {mobileFeatures.map((feature, index) => (
+              <motion.div
+                key={feature.id}
+                className="min-w-full flex items-center justify-center px-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.4,
+                  delay: index === mobileFeatureIndex ? 0 : 0.1,
+                  ease: [0.4, 0.0, 0.2, 1]
+                }}
+              >
+                <div className="relative">
+                  {/* Card Container */}
+                  <div className="flex items-center gap-4 bg-white rounded-2xl shadow-xl border border-amber-800/10 p-4 max-w-[340px] w-full">
+                    {/* Icon Container with Matching Background */}
+                    <div className="relative">
+                      <div className="relative w-20 h-20 bg-amber-800 rounded-full flex items-center justify-center">
+                        <feature.icon className="w-10 h-10 text-white" />
+                      </div>
+                    </div>
+                    
+                    {/* Text Content */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-extrabold tracking-tight text-amber-800 uppercase leading-tight mb-1">
+                        {feature.title}
+                      </h3>
+                      <p className="text-sm text-amber-600 leading-relaxed">
+                        {feature.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Subtle Accent Line */}
+                  <div className="absolute -bottom-1 left-5 right-5 h-0.5 bg-gradient-to-r from-amber-800/20 via-amber-800/40 to-amber-800/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Enhanced Mobile Dots */}
+        <div className="sm:hidden absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-3">
+          {mobileFeatures.map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => setMobileFeatureIndex(index)}
+              className={`h-2 rounded-full transition-all duration-500 ${
+                mobileFeatureIndex === index 
+                  ? 'bg-gradient-to-r from-amber-800 to-orange-500 w-8' 
+                  : 'bg-amber-800/20'
+              }`}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.8 }}
+            />
+          ))}
+        </div>
+      </div>
 
       {/* Featured Deals - Promo Section */}
       <section className="py-24 sm:py-32 lg:py-48 bg-gradient-to-br from-highlight/5 via-white to-ink/5">
@@ -429,139 +730,259 @@ export default function StorePage({
             </p>
           </motion.div>
           
-          {/* Promo Products Grid - 2 Cards at a Time */}
+          {/* Promo Products Grid - Enhanced Desktop, Preserved Mobile */}
           <div className="relative">
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-              {dealProducts.slice(promoSlide * 2, (promoSlide + 1) * 2).map((product, index) => (
-                <motion.div 
-                  key={`${product.id}-${promoSlide}`}
-                  initial={{ opacity: 0, scale: 0.8, x: 50 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, x: -50 }}
-                  transition={{ 
-                    duration: 0.6, 
-                    type: "spring", 
-                    stiffness: 300,
-                    delay: index * 0.1
-                  }}
-                  whileHover={{ 
-                    y: -8, 
-                    scale: 1.05,
-                    transition: { type: "spring", stiffness: 400, damping: 17 }
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  className="group cursor-pointer relative"
-                  onClick={() => openProductDetails(product)}
-                >
-                  {/* Promo Badge */}
-                  <motion.div
-                    initial={{ scale: 0, rotate: -10 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ delay: index * 0.1 + 0.2, type: "spring", stiffness: 300 }}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className="absolute top-2 right-2 z-30 bg-highlight text-paper px-2 py-1 text-[8px] font-black uppercase rounded-full shadow-lg"
+            {/* Desktop: Elite 4-Product Showcase */}
+            <div className="hidden lg:block">
+              <div className="grid grid-cols-4 gap-8">
+                {dealProducts.slice(0, 4).map((product, index) => (
+                  <motion.div 
+                    key={`${product.id}-desktop`}
+                    initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ 
+                      duration: 0.8, 
+                      type: "spring", 
+                      stiffness: 200,
+                      delay: index * 0.15
+                    }}
+                    whileHover={{ 
+                      y: -15, 
+                      scale: 1.03,
+                      transition: { type: "spring", stiffness: 300, damping: 20 }
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    className="group cursor-pointer relative"
+                    onClick={() => openProductDetails(product)}
                   >
-                    -{product.discount}%
-                  </motion.div>
+                    {/* Elite Promo Badge */}
+                    <motion.div
+                      initial={{ scale: 0, rotate: -15 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ delay: index * 0.15 + 0.3, type: "spring", stiffness: 300 }}
+                      whileHover={{ scale: 1.15, rotate: 8 }}
+                      className="absolute top-3 right-3 z-30 bg-gradient-to-r from-highlight to-orange-500 text-white px-3 py-1.5 text-[10px] font-black uppercase rounded-full shadow-2xl border-2 border-white/50"
+                    >
+                      -{product.discount}%
+                    </motion.div>
 
-                  {/* Hover Glow Effect */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 0.3 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0 bg-gradient-to-tr from-highlight/30 via-transparent to-ink/10 rounded-xl -inset-1"
-                  />
-                  
-                  {/* Image Container */}
-                  <div className="relative aspect-square overflow-hidden mb-4 bg-line/10 rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300">
-                    <motion.img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
-                      referrerPolicy="no-referrer"
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                    
-                    {/* Image Overlay on Hover */}
+                    {/* Premium Hover Glow */}
                     <motion.div
                       initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent"
+                      whileHover={{ opacity: 0.4 }}
+                      transition={{ duration: 0.4 }}
+                      className="absolute inset-0 bg-gradient-to-tr from-amber-500/40 via-highlight/30 to-orange-500/40 rounded-2xl -inset-2"
                     />
-                  </div>
-                  
-                  <div className="space-y-2 relative z-10">
-                    <div className="flex justify-between items-start">
+                    
+                    {/* Enhanced Image Container */}
+                    <div className="relative aspect-square overflow-hidden mb-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-500 border border-amber-800/10">
+                      <motion.img 
+                        src={product.image} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                        referrerPolicy="no-referrer"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                      
+                      {/* Premium Image Overlay */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 1 }}
+                        transition={{ duration: 0.4 }}
+                        className="absolute inset-0 bg-gradient-to-t from-amber-900/60 via-amber-800/30 to-transparent"
+                      />
+                    </div>
+                    
+                    {/* Enhanced Content */}
+                    <div className="space-y-3 relative z-10">
                       <motion.h3 
-                        initial={{ opacity: 0, y: 5 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 0.3 }}
-                        className="text-sm sm:text-base font-black uppercase tracking-tighter group-hover:text-highlight transition-colors duration-300 line-clamp-2"
+                        transition={{ delay: index * 0.15 + 0.4 }}
+                        className="text-base font-black uppercase tracking-tight group-hover:text-highlight transition-colors duration-400 line-clamp-2 leading-tight"
                       >
                         {product.name}
                       </motion.h3>
-                      <div className="text-right flex-shrink-0 ml-2">
-                        <motion.span 
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: index * 0.1 + 0.4, type: "spring", stiffness: 200 }}
-                          className="text-highlight font-black text-sm sm:text-base group-hover:scale-110 transition-transform duration-300 block"
+                      
+                      <div className="flex justify-between items-center">
+                        <div className="flex-1">
+                          <motion.span 
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.15 + 0.5, type: "spring", stiffness: 200 }}
+                            className="text-highlight font-black text-lg group-hover:scale-105 transition-transform duration-400 block"
+                          >
+                            ${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}
+                          </motion.span>
+                          <motion.span 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: index * 0.15 + 0.6 }}
+                            className="text-ink/40 line-through text-sm block"
+                          >
+                            ${product.price.toFixed(2)}
+                          </motion.span>
+                        </div>
+                        
+                        <motion.button 
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.15 + 0.7 }}
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart(product);
+                          }}
+                          className="relative overflow-hidden bg-gradient-to-r from-amber-800 to-orange-500 text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-300"
                         >
-                          ${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}
-                        </motion.span>
-                        <motion.span 
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: index * 0.1 + 0.5 }}
-                          className="text-ink/30 line-through text-xs block"
-                        >
-                          ${product.price.toFixed(2)}
-                        </motion.span>
+                          <motion.div
+                            animate={{ x: [0, 100] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                          />
+                          <span className="relative z-10">🔥 Deal</span>
+                        </motion.button>
                       </div>
                     </div>
-                    
-                    <motion.button 
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 + 0.6 }}
-                      whileHover={{ scale: 1.05, y: -1 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-                      className="w-full py-2 border border-highlight text-[8px] uppercase tracking-[0.3em] font-black bg-highlight text-paper hover:bg-ink hover:border-ink transition-all duration-300 relative overflow-hidden group/btn rounded-md"
-                    >
-                      <motion.div
-                        initial={{ x: "-100%" }}
-                        whileHover={{ x: "100%" }}
-                        transition={{ duration: 0.3 }}
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                      />
-                      <span className="relative z-10">🔥 Deal</span>
-                    </motion.button>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </div>
             </div>
 
-            {/* Promo Slide Indicators */}
-            <div className="flex justify-center gap-2 mt-6">
-              {Array.from({ length: Math.ceil(dealProducts.length / 2) }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setPromoSlide(index);
-                    setIsAutoScroll(false);
-                  }}
-                  onMouseEnter={() => setIsAutoScroll(false)}
-                  onMouseLeave={() => setIsAutoScroll(true)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    promoSlide === index 
-                      ? 'bg-highlight w-8' 
-                      : 'bg-line hover:bg-ink/40'
-                  }`}
-                />
-              ))}
+            {/* Mobile/Tablet: Enhanced Swipeable All Products */}
+            <div className="lg:hidden">
+              <div className="overflow-x-auto pb-6 px-4 sm:px-6 lg:px-8">
+                <div className="flex gap-4 sm:gap-6 lg:gap-8 min-w-max">
+                  {dealProducts.map((product, index) => (
+                    <motion.div 
+                      key={`${product.id}-mobile-scroll`}
+                      initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ 
+                        duration: 0.6, 
+                        type: "spring", 
+                        stiffness: 300,
+                        delay: index * 0.1
+                      }}
+                      whileHover={{ 
+                        y: -8, 
+                        scale: 1.05,
+                        transition: { type: "spring", stiffness: 400, damping: 17 }
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group cursor-pointer relative flex-shrink-0 w-64 sm:w-72"
+                      onClick={() => openProductDetails(product)}
+                      drag="x"
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.2}
+                    >
+                      {/* Promo Badge */}
+                      <motion.div
+                        initial={{ scale: 0, rotate: -10 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ delay: index * 0.1 + 0.2, type: "spring", stiffness: 300 }}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        className="absolute top-2 right-2 z-30 bg-highlight text-paper px-2 py-1 text-[8px] font-black uppercase rounded-full shadow-lg"
+                      >
+                        -{product.discount}%
+                      </motion.div>
+
+                      {/* Hover Glow Effect */}
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        whileHover={{ opacity: 0.3 }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute inset-0 bg-gradient-to-tr from-highlight/30 via-transparent to-ink/10 rounded-xl -inset-1"
+                      />
+                      
+                      {/* Image Container */}
+                      <div className="relative aspect-square overflow-hidden mb-4 bg-line/10 rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300">
+                        <motion.img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                          referrerPolicy="no-referrer"
+                          whileHover={{ scale: 1.1 }}
+                          transition={{ duration: 0.3 }}
+                        />
+                        
+                        {/* Image Overlay on Hover */}
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          whileHover={{ opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2 relative z-10">
+                        <div className="flex justify-between items-start">
+                          <motion.h3 
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 + 0.3 }}
+                            className="text-sm sm:text-base font-black uppercase tracking-tighter group-hover:text-highlight transition-colors duration-300 line-clamp-2"
+                          >
+                            {product.name}
+                          </motion.h3>
+                          <div className="text-right flex-shrink-0 ml-2">
+                            <motion.span 
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: index * 0.1 + 0.4, type: "spring", stiffness: 200 }}
+                              className="text-highlight font-black text-sm sm:text-base group-hover:scale-110 transition-transform duration-300 block"
+                            >
+                              ${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}
+                            </motion.span>
+                            <motion.span 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: index * 0.1 + 0.5 }}
+                              className="text-ink/30 line-through text-xs block"
+                            >
+                              ${product.price.toFixed(2)}
+                            </motion.span>
+                          </div>
+                        </div>
+                        
+                        <motion.button 
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 + 0.6 }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart(product);
+                          }}
+                          className="w-full relative overflow-hidden bg-gradient-to-r from-amber-800 to-highlight text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-300"
+                        >
+                          <motion.div
+                            animate={{ x: [0, 100] }}
+                            transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                          />
+                          <span className="relative z-10">🔥 Deal</span>
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                {/* Swipe Indicator */}
+                <div className="flex justify-center mt-4">
+                  <motion.div
+                    animate={{ x: [0, 10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-ink/30 text-xs font-medium uppercase tracking-wider flex items-center gap-2"
+                  >
+                    <span>Swipe to see more</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </motion.div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -645,12 +1066,12 @@ export default function StorePage({
             </motion.div>
           </div>
 
-          {/* Product Grid - Mobile Optimized */}
+          {/* Product Grid - Mobile Smaller Images, Desktop Preserved */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 lg:gap-10"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 xl:gap-10"
           >
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product, index) => (
@@ -660,8 +1081,8 @@ export default function StorePage({
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -30 }}
                   whileHover={{ 
-                    y: -12, 
-                    scale: 1.03,
+                    y: -8, 
+                    scale: 1.02,
                     transition: { type: "spring", stiffness: 400, damping: 17 }
                   }}
                   whileTap={{ scale: 0.98 }}
@@ -678,34 +1099,20 @@ export default function StorePage({
                   {/* Hover Glow Effect */}
                   <motion.div
                     initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 0.3 }}
+                    whileHover={{ opacity: 0.2 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0 bg-gradient-to-tr from-highlight/20 via-transparent to-ink/10 rounded-2xl -inset-2"
+                    className="absolute inset-0 bg-gradient-to-tr from-highlight/20 via-transparent to-ink/10 rounded-xl sm:rounded-2xl -inset-1 sm:-inset-2"
                   />
                   
-                  {/* Product Image Container */}
-                  <div className="relative aspect-[4/5] sm:aspect-[3/4] overflow-hidden mb-6 sm:mb-8 bg-line/10 rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
+                  {/* Product Image Container - Smaller on Mobile */}
+                  <div className="relative aspect-[4/5] sm:aspect-[3/4] overflow-hidden mb-3 sm:mb-6 bg-line/10 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg group-hover:shadow-xl sm:group-hover:shadow-2xl transition-all duration-500">
                     <motion.img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-all duration-500 sm:duration-700 group-hover:scale-105 sm:group-hover:scale-110"
                       referrerPolicy="no-referrer"
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
+                      whileHover={{ scale: 1.05 }}
                     />
-                    
-                    {/* Discount Badge */}
-                    {product.discount && (
-                      <motion.div 
-                        initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
-                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        className="absolute top-3 sm:top-4 left-3 sm:left-4 bg-highlight text-paper px-3 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-xs font-black uppercase rounded-full shadow-lg"
-                      >
-                        -{product.discount}%
-                      </motion.div>
-                    )}
                     
                     {/* Quick Add Button */}
                     <motion.button
@@ -723,28 +1130,28 @@ export default function StorePage({
                       initial={{ opacity: 0 }}
                       whileHover={{ opacity: 1 }}
                       transition={{ duration: 0.3 }}
-                      className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent"
+                      className="absolute inset-0 bg-gradient-to-t from-ink/20 sm:from-ink/30 via-transparent to-transparent"
                     />
                   </div>
                   
-                  {/* Product Info */}
-                  <div className="space-y-3 sm:space-y-4 relative z-10">
+                  {/* Product Info - Smaller on Mobile */}
+                  <div className="space-y-2 sm:space-y-4 relative z-10">
                     <div>
                       <motion.h3 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-lg sm:text-xl font-black uppercase tracking-tighter group-hover:text-highlight transition-colors duration-300 line-clamp-2 leading-tight"
+                        className="text-sm sm:text-xl font-black uppercase tracking-tighter group-hover:text-highlight transition-colors duration-300 line-clamp-2 leading-tight"
                       >
                         {product.name}
                       </motion.h3>
                       
-                      {/* Animated Stars */}
+                      {/* Animated Stars - Smaller on Mobile */}
                       <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="flex items-center gap-1 my-2"
+                        className="flex items-center gap-1 my-1 sm:my-2"
                       >
                         {[...Array(5)].map((_, i) => (
                           <motion.div
@@ -752,7 +1159,7 @@ export default function StorePage({
                             initial={{ scale: 0, rotate: -180 }}
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{ delay: 0.3 + i * 0.05, type: "spring", stiffness: 200 }}
-                            className="w-3 h-3 sm:w-4 sm:h-4"
+                            className="w-2 h-2 sm:w-4 sm:h-4"
                           >
                             {i < 4 ? (
                               <div className="w-full h-full bg-highlight rounded-full" />
@@ -770,7 +1177,7 @@ export default function StorePage({
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.3 }}
-                          className="text-xl sm:text-2xl font-black text-highlight"
+                          className="text-base sm:text-2xl font-black text-highlight"
                         >
                           ${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}
                         </motion.span>
@@ -779,7 +1186,7 @@ export default function StorePage({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4 }}
-                            className="text-sm text-ink/30 line-through ml-2"
+                            className="text-xs sm:text-sm text-ink/30 line-through ml-2"
                           >
                             ${product.price.toFixed(2)}
                           </motion.span>

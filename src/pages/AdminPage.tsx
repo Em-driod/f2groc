@@ -48,7 +48,7 @@ export default function AdminPage({
       <header className="bg-ink text-white p-4 md:hidden">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-lg font-black uppercase tracking-tighter">F2G</span>
+            <span className="text-lg font-black uppercase tracking-tighter">F2GF2 Protein ‘n’ Groceries</span>
             <div className="text-[8px] uppercase tracking-[0.2em] font-black text-white/60">Admin</div>
           </div>
           <button 
