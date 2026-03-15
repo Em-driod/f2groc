@@ -20,6 +20,7 @@
   --color-surface: hsla(220, 20%, 8%, 0.03);
 
   --shadow-elite: 0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+  --shadow-soft: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
   --shadow-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
   --shadow-liquid: 0 10px 30px -5px var(--color-accent);
 
@@ -59,11 +60,11 @@
 
 @layer components {
   .btn-elite {
-    @apply relative px-10 py-5 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.4em] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23, 1, 0.32, 1)] hover:shadow-elite hover:-translate-y-1 active:scale-95 disabled:opacity-20;
+    @apply relative px-10 py-5 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.4em] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-elite hover:-translate-y-1 active:scale-95 disabled:opacity-20;
   }
 
   .btn-elite::before {
-    @apply content-[''] absolute inset-0 bg-accent translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.23, 1, 0.32, 1)];
+    @apply content-[''] absolute inset-0 bg-accent translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)];
   }
 
   .btn-elite:hover::before {
@@ -79,7 +80,7 @@
   }
 
   .card-elite {
-    @apply relative bg-white border border-line p-12 transition-all duration-1000 ease-[cubic-bezier(0.16, 1, 0.3, 1)] hover:border-accent/40 hover:shadow-elite;
+    @apply relative bg-white border border-line p-12 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-accent/40 hover:shadow-elite;
     box-shadow: var(--shadow-soft);
   }
 
