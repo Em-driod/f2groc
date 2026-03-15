@@ -6,51 +6,107 @@
   --font-serif: "Cormorant Garamond", serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-paper: #ffffff;
-  --color-ink: #000000;
-  --color-line: #eeeeee;
-  --color-accent: #000000; /* Pure black for a high-fashion look */
-  --color-highlight: #ff3300; /* A sharp pop of red/orange for energy */
+  /* Premium HSL Palette */
+  --color-paper: hsl(30, 25%, 98%);     /* Warm Ivory Silk */
+  --color-ink: hsl(220, 20%, 8%);      /* Obsidian Midnight */
+  --color-line: hsla(220, 20%, 8%, 0.08); 
+  --color-accent: hsl(38, 55%, 55%);   /* Venetian Gold */
+  --color-highlight: hsl(15, 80%, 50%); /* Burnt Sienna */
+  --color-glass: hsla(255, 100%, 100%, 0.6);
+  --color-surface: hsla(220, 20%, 8%, 0.03);
+  
+  --shadow-elite: 0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0,0,0,0.1);
+  --shadow-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  --shadow-liquid: 0 10px 30px -5px var(--color-accent);
+  
+  --radius-elite: 2.5rem;
+  --radius-soft: 1.5rem;
+  --radius-liquid: 3rem;
+
+  /* 10/10 Accents */
+  --color-gold-glimmer: hsla(38, 55%, 55%, 0.1);
+  --color-electric: hsl(190, 100%, 50%);
 }
 
 @layer base {
   body {
     @apply bg-paper text-ink font-sans antialiased selection:bg-ink selection:text-paper;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-light;
+    @apply font-serif font-medium tracking-tight;
   }
+
+  /* Fluid Typography */
+  h1 { font-size: clamp(3rem, 10vw, 8rem); }
+  h2 { font-size: clamp(2rem, 5vw, 4rem); }
 }
 
 @layer components {
-  .btn-f2proteinsandgroceries {
-    @apply px-10 py-4 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.3em] transition-all hover:bg-highlight hover:text-paper active:scale-[0.98] disabled:opacity-20;
-  }
-
   .btn-elite {
-    @apply px-10 py-4 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.3em] transition-all hover:bg-highlight hover:text-paper active:scale-[0.98] disabled:opacity-20;
+    @apply relative px-10 py-5 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.4em] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-elite hover:-translate-y-1 active:scale-95 disabled:opacity-20;
   }
 
-  .card-f2proteinsandgroceries {
-    @apply bg-white border border-line p-8 transition-all hover:border-ink hover:shadow-[20px_20px_0px_rgba(0,0,0,0.02)];
+  .btn-elite::before {
+    @apply content-[''] absolute inset-0 bg-accent translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)];
   }
 
-  .input-f2proteinsandgroceries {
-    @apply w-full bg-white border border-line px-6 py-4 font-sans text-sm focus:outline-none focus:border-ink transition-all placeholder:text-ink/20;
+  .btn-elite:hover::before {
+    @apply translate-y-0;
   }
 
-  .label-f2proteinsandgroceries {
-    @apply text-[10px] uppercase tracking-[0.25em] font-sans font-black text-ink;
+  .btn-elite span {
+    @apply relative z-10;
   }
 
-  .grid-line {
-    @apply border-line border-t border-l;
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-3xl border border-white/40 shadow-soft transition-all duration-700;
   }
 
-  .grid-cell {
-    @apply border-line border-r border-b p-8;
+  .card-elite {
+    @apply relative bg-white border border-line p-12 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-accent/40 hover:shadow-elite;
+    box-shadow: var(--shadow-soft);
   }
+
+  /* Grain Texture Overlay */
+  .noise {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    width: 200%;
+    height: 200%;
+    background: transparent url('http://assets.iceablethemes.com/img/noise-transparent.png') repeat 0 0;
+    background-repeat: repeat;
+    animation: noise 0.2s infinite;
+    opacity: .05;
+    visibility: visible;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  @keyframes noise {
+    0% { transform: translate(0,0) }
+    10% { transform: translate(-5%,-5%) }
+    20% { transform: translate(-10%,5%) }
+    30% { transform: translate(5%,-10%) }
+    40% { transform: translate(-5%,15%) }
+    50% { transform: translate(-10%,5%) }
+    60% { transform: translate(15%,0) }
+    70% { transform: translate(0,10%) }
+    80% { transform: translate(-15%,0) }
+    90% { transform: translate(10%,5%) }
+    100% { transform: translate(5%,0) }
+  }
+
+  /* Magnet Effect Utility */
+  .magnet-wrap {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
 
   /* Particle positioning utilities */
   .particle-1 { @apply top-[20%] left-[10%]; }
@@ -78,6 +134,53 @@
     
     .navbar-button-mobile {
       padding: 0.5rem;
+    }
+  }
+}
+
+  /* Liquid Navigation Bar */
+  .liquid-nav {
+    @apply fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-1 p-2 bg-ink/80 backdrop-blur-3xl border border-white/10 rounded-liquid shadow-elite transition-all duration-700;
+  }
+
+  .liquid-item {
+    @apply relative flex items-center justify-center w-14 h-14 rounded-full text-white/40 transition-all duration-500 hover:text-white;
+  }
+
+  .liquid-bubble {
+    @apply absolute inset-0 bg-accent rounded-full -z-10 shadow-liquid;
+  }
+
+  /* Electric Touch Effect */
+  .electric-tap {
+    @apply active:scale-90 active:brightness-125 transition-all duration-150;
+  }
+
+  /* Dynamic Headings */
+  .heading-electric {
+    font-size: clamp(2.5rem, 15vw, 6rem);
+    line-height: .85;
+    letter-spacing: -.04em;
+    @apply font-black uppercase;
+  }
+
+  @media (max-width: 640px) {
+    .heading-electric {
+      font-size: clamp(3rem, 18vw, 5rem);
+    }
+    .glint-sweep {
+      @apply relative overflow-hidden;
+    }
+
+    .glint-sweep::after {
+      content: "";
+      @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent;
+      animation: glint 3s infinite;
+    }
+
+    @keyframes glint {
+      0% { transform: translateX(-100%) skewX(-15deg); }
+      50%, 100% { transform: translateX(200%) skewX(-15deg); }
     }
   }
 }

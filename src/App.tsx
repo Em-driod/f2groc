@@ -565,60 +565,58 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Fixed Bottom Navigation - Mobile Only */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-line shadow-lg lg:hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-around items-center py-3">
-            <button
-              onClick={() => setView('store')}
-              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
-                view === 'store' 
-                  ? 'bg-highlight text-paper' 
-                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
-              }`}
-            >
-              <ShoppingBasket className="w-5 h-5" />
-              <span className="text-[10px] font-black uppercase tracking-wider">Shop</span>
-            </button>
-            
-            <button
-              onClick={() => setView('about')}
-              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
-                view === 'about' 
-                  ? 'bg-highlight text-paper' 
-                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
-              }`}
-            >
-              <Tag className="w-5 h-5" />
-              <span className="text-[10px] font-black uppercase tracking-wider">About</span>
-            </button>
-            
-            <button
-              onClick={() => setView('contact')}
-              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
-                view === 'contact' 
-                  ? 'bg-highlight text-paper' 
-                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
-              }`}
-            >
-              <Layers className="w-5 h-5" />
-              <span className="text-[10px] font-black uppercase tracking-wider">Contact</span>
-            </button>
-            
-            <button
-              onClick={() => setView('account')}
-              className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
-                view === 'account' 
-                  ? 'bg-highlight text-paper' 
-                  : 'text-ink/60 hover:text-ink hover:bg-ink/10'
-              }`}
-            >
-              <User className="w-5 h-5" />
-              <span className="text-[10px] font-black uppercase tracking-wider">Account</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+      {/* Fixed Bottom Navigation - Mobile Elite Pill */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 lg:hidden w-[90%] max-w-[400px]">
+        <nav className="bg-ink/90 backdrop-blur-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] p-2 flex justify-around items-center">
+          <button
+            onClick={() => setView('store')}
+            className={`flex flex-col items-center gap-1 p-3 rounded-full transition-all duration-500 ${
+              view === 'store' 
+                ? 'bg-white text-ink shadow-elite' 
+                : 'text-white/40 hover:text-white'
+            }`}
+          >
+            <ShoppingBasket className="w-5 h-5" />
+            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Shop</span>
+          </button>
+          
+          <button
+            onClick={() => setView('about')}
+            className={`flex flex-col items-center gap-1 p-3 rounded-full transition-all duration-500 ${
+              view === 'about' 
+                ? 'bg-white text-ink shadow-elite' 
+                : 'text-white/40 hover:text-white'
+            }`}
+          >
+            <Tag className="w-5 h-5" />
+            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">About</span>
+          </button>
+          
+          <button
+            onClick={() => setView('contact')}
+            className={`flex flex-col items-center gap-1 p-3 rounded-full transition-all duration-500 ${
+              view === 'contact' 
+                ? 'bg-white text-ink shadow-elite' 
+                : 'text-white/40 hover:text-white'
+            }`}
+          >
+            <Layers className="w-5 h-5" />
+            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Contact</span>
+          </button>
+          
+          <button
+            onClick={() => setView('account')}
+            className={`flex flex-col items-center gap-1 p-3 rounded-full transition-all duration-500 ${
+              view === 'account' 
+                ? 'bg-white text-ink shadow-elite' 
+                : 'text-white/40 hover:text-white'
+            }`}
+          >
+            <User className="w-5 h-5" />
+            <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">Account</span>
+          </button>
+        </nav>
+      </div>
     </div>
   );
 }

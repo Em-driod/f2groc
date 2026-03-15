@@ -11,16 +11,16 @@ const F2ProteinSection = () => {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-black text-amber-800 mb-2">
+          <h2 className="text-5xl md:text-7xl font-black text-amber-900 mb-6 tracking-tighter">
             F2 Protein 'n' Groceries
           </h2>
-          <div className="text-3xl md:text-4xl font-bold text-orange-500 mb-4">
+          <div className="text-3xl md:text-5xl font-black text-orange-600 mb-8 uppercase tracking-widest">
             African Market
           </div>
-          <p className="text-xl text-amber-600 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl lg:text-2xl text-amber-900/80 max-w-4xl mx-auto leading-relaxed font-serif italic mb-12">
             Your #1 Destination for Egusi, Garri, Yam, and All Authentic African & Caribbean Groceries – Delivered to Your Doorstep Across the UK
           </p>
-          <button className="mt-8 px-8 py-4 bg-gradient-to-r from-amber-800 to-orange-500 text-white font-bold rounded-full hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+          <button className="px-12 py-5 bg-ink text-white font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-accent transform hover:-translate-y-1 transition-all duration-700 border-2 border-ink">
             Shop Now
           </button>
         </div>
