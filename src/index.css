@@ -7,18 +7,22 @@
   --font-mono: "JetBrains Mono", monospace;
 
   /* Premium HSL Palette */
-  --color-paper: hsl(30, 25%, 98%);     /* Warm Ivory Silk */
-  --color-ink: hsl(220, 20%, 8%);      /* Obsidian Midnight */
-  --color-line: hsla(220, 20%, 8%, 0.08); 
-  --color-accent: hsl(38, 55%, 55%);   /* Venetian Gold */
-  --color-highlight: hsl(15, 80%, 50%); /* Burnt Sienna */
+  --color-paper: hsl(30, 25%, 98%);
+  /* Warm Ivory Silk */
+  --color-ink: hsl(220, 20%, 8%);
+  /* Obsidian Midnight */
+  --color-line: hsla(220, 20%, 8%, 0.08);
+  --color-accent: hsl(38, 55%, 55%);
+  /* Venetian Gold */
+  --color-highlight: hsl(15, 80%, 50%);
+  /* Burnt Sienna */
   --color-glass: hsla(255, 100%, 100%, 0.6);
   --color-surface: hsla(220, 20%, 8%, 0.03);
-  
-  --shadow-elite: 0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0,0,0,0.1);
+
+  --shadow-elite: 0 40px 80px -20px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
   --shadow-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
   --shadow-liquid: 0 10px 30px -5px var(--color-accent);
-  
+
   --radius-elite: 2.5rem;
   --radius-soft: 1.5rem;
   --radius-liquid: 3rem;
@@ -34,22 +38,32 @@
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-serif font-medium tracking-tight;
   }
 
   /* Fluid Typography */
-  h1 { font-size: clamp(3rem, 10vw, 8rem); }
-  h2 { font-size: clamp(2rem, 5vw, 4rem); }
+  h1 {
+    font-size: clamp(3rem, 10vw, 8rem);
+  }
+
+  h2 {
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
 }
 
 @layer components {
   .btn-elite {
-    @apply relative px-10 py-5 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.4em] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-elite hover:-translate-y-1 active:scale-95 disabled:opacity-20;
+    @apply relative px-10 py-5 bg-ink text-paper font-sans text-[11px] font-bold uppercase tracking-[0.4em] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.23, 1, 0.32, 1)] hover:shadow-elite hover:-translate-y-1 active:scale-95 disabled:opacity-20;
   }
 
   .btn-elite::before {
-    @apply content-[''] absolute inset-0 bg-accent translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)];
+    @apply content-[''] absolute inset-0 bg-accent translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.23, 1, 0.32, 1)];
   }
 
   .btn-elite:hover::before {
@@ -65,7 +79,7 @@
   }
 
   .card-elite {
-    @apply relative bg-white border border-line p-12 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-accent/40 hover:shadow-elite;
+    @apply relative bg-white border border-line p-12 transition-all duration-1000 ease-[cubic-bezier(0.16, 1, 0.3, 1)] hover:border-accent/40 hover:shadow-elite;
     box-shadow: var(--shadow-soft);
   }
 
@@ -88,17 +102,49 @@
   }
 
   @keyframes noise {
-    0% { transform: translate(0,0) }
-    10% { transform: translate(-5%,-5%) }
-    20% { transform: translate(-10%,5%) }
-    30% { transform: translate(5%,-10%) }
-    40% { transform: translate(-5%,15%) }
-    50% { transform: translate(-10%,5%) }
-    60% { transform: translate(15%,0) }
-    70% { transform: translate(0,10%) }
-    80% { transform: translate(-15%,0) }
-    90% { transform: translate(10%,5%) }
-    100% { transform: translate(5%,0) }
+    0% {
+      transform: translate(0, 0)
+    }
+
+    10% {
+      transform: translate(-5%, -5%)
+    }
+
+    20% {
+      transform: translate(-10%, 5%)
+    }
+
+    30% {
+      transform: translate(5%, -10%)
+    }
+
+    40% {
+      transform: translate(-5%, 15%)
+    }
+
+    50% {
+      transform: translate(-10%, 5%)
+    }
+
+    60% {
+      transform: translate(15%, 0)
+    }
+
+    70% {
+      transform: translate(0, 10%)
+    }
+
+    80% {
+      transform: translate(-15%, 0)
+    }
+
+    90% {
+      transform: translate(10%, 5%)
+    }
+
+    100% {
+      transform: translate(5%, 0)
+    }
   }
 
   /* Magnet Effect Utility */
@@ -109,81 +155,105 @@
 
 
   /* Particle positioning utilities */
-  .particle-1 { @apply top-[20%] left-[10%]; }
-  .particle-2 { @apply top-[35%] left-[22%]; }
-  .particle-3 { @apply top-[50%] left-[34%]; }
-  .particle-4 { @apply top-[65%] left-[46%]; }
-  .particle-5 { @apply top-[80%] left-[58%]; }
-  .particle-6 { @apply top-[95%] left-[70%]; }
+  .particle-1 {
+    @apply top-[20%] left-[10%];
+  }
+
+  .particle-2 {
+    @apply top-[35%] left-[22%];
+  }
+
+  .particle-3 {
+    @apply top-[50%] left-[34%];
+  }
+
+  .particle-4 {
+    @apply top-[65%] left-[46%];
+  }
+
+  .particle-5 {
+    @apply top-[80%] left-[58%];
+  }
+
+  .particle-6 {
+    @apply top-[95%] left-[70%];
+  }
 
   /* Mobile navbar optimizations */
   @media (max-width: 640px) {
     .navbar-mobile {
       padding: 0.75rem 1rem;
     }
-    
+
     .navbar-logo-mobile {
       font-size: 0.875rem;
       line-height: 1.25;
     }
-    
+
     .navbar-icon-mobile {
       width: 1.25rem;
       height: 1.25rem;
     }
-    
+
     .navbar-button-mobile {
       padding: 0.5rem;
     }
   }
 }
 
-  /* Liquid Navigation Bar */
-  .liquid-nav {
-    @apply fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-1 p-2 bg-ink/80 backdrop-blur-3xl border border-white/10 rounded-liquid shadow-elite transition-all duration-700;
-  }
+/* Liquid Navigation Bar */
+.liquid-nav {
+  @apply fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-1 p-2 bg-ink/80 backdrop-blur-3xl border border-white/10 rounded-liquid shadow-elite transition-all duration-700;
+}
 
-  .liquid-item {
-    @apply relative flex items-center justify-center w-14 h-14 rounded-full text-white/40 transition-all duration-500 hover:text-white;
-  }
+.liquid-item {
+  @apply relative flex items-center justify-center w-14 h-14 rounded-full text-white/40 transition-all duration-500 hover:text-white;
+}
 
-  .liquid-bubble {
-    @apply absolute inset-0 bg-accent rounded-full -z-10 shadow-liquid;
-  }
+.liquid-bubble {
+  @apply absolute inset-0 bg-accent rounded-full -z-10 shadow-liquid;
+}
 
-  /* Electric Touch Effect */
-  .electric-tap {
-    @apply active:scale-90 active:brightness-125 transition-all duration-150;
-  }
+/* Electric Touch Effect */
+.electric-tap {
+  @apply active:scale-90 active:brightness-125 transition-all duration-150;
+}
 
-  /* Dynamic Headings */
+/* Dynamic Headings */
+.heading-electric {
+  font-size: clamp(2.5rem, 15vw, 6rem);
+  line-height: .85;
+  letter-spacing: -.04em;
+  @apply font-black uppercase;
+}
+
+@media (max-width: 640px) {
   .heading-electric {
-    font-size: clamp(2.5rem, 15vw, 6rem);
-    line-height: .85;
-    letter-spacing: -.04em;
-    @apply font-black uppercase;
+    font-size: clamp(3rem, 18vw, 5rem);
   }
 
-  @media (max-width: 640px) {
-    .heading-electric {
-      font-size: clamp(3rem, 18vw, 5rem);
-    }
-    .glint-sweep {
-      @apply relative overflow-hidden;
+  .glint-sweep {
+    @apply relative overflow-hidden;
+  }
+
+  .glint-sweep::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    animation: glint 3s infinite;
+  }
+
+  @keyframes glint {
+    0% {
+      transform: translateX(-100%) skewX(-15deg);
     }
 
-    .glint-sweep::after {
-      content: "";
-      @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent;
-      animation: glint 3s infinite;
-    }
-
-    @keyframes glint {
-      0% { transform: translateX(-100%) skewX(-15deg); }
-      50%, 100% { transform: translateX(200%) skewX(-15deg); }
+    50%,
+    100% {
+      transform: translateX(200%) skewX(-15deg);
     }
   }
 }
+
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
