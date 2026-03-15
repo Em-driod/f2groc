@@ -712,8 +712,6 @@ export default function StorePage({
           </div>
         </div>
       </footer>
-      <LiquidBottomNav setView={setView} />
-
       {/* Absolute 10/10 Celestial Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -998,44 +996,3 @@ const ProductCard: React.FC<{
   );
 };
 
-function LiquidBottomNav({ setView }: { setView: (view: string) => void }) {
-  const [activeItem, setActiveItem] = useState('shop');
-  const items = [
-    { id: 'shop', icon: ShoppingBag, label: 'Shop' },
-    { id: 'search', icon: Search, label: 'Find' },
-    { id: 'cart', icon: ShoppingCart, label: 'Cart' },
-    { id: 'account', icon: User, label: 'You' },
-  ];
-
-  return (
-    <div className="md:hidden liquid-nav">
-      {items.map((item) => (
-        <button
-          key={item.id}
-          onClick={() => {
-            setActiveItem(item.id);
-            if (item.id === 'account') setView('account');
-            else setView('store');
-          }}
-          className={`liquid-item electric-tap ${activeItem === item.id ? 'text-white' : ''}`}
-        >
-          {activeItem === item.id && (
-            <motion.div
-              layoutId="bubble"
-              className="liquid-bubble"
-              transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            />
-          )}
-          <item.icon className="w-5 h-5 relative z-10" />
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: activeItem === item.id ? 1 : 0 }}
-            className="absolute -bottom-1 text-[8px] font-black uppercase tracking-widest text-white/50"
-          >
-            {item.label}
-          </motion.span>
-        </button>
-      ))}
-    </div>
-  );
-}

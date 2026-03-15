@@ -566,7 +566,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Fixed Bottom Navigation - Mobile Elite Pill */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 lg:hidden w-[90%] max-w-[400px]">
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 md:hidden w-[90%] max-w-[400px]">
         <nav className="bg-ink/90 backdrop-blur-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] p-2 flex justify-around items-center">
           <button
             onClick={() => setView('store')}
