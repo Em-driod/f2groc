@@ -56,6 +56,33 @@ export default function StorePage({
   const [promoSlide, setPromoSlide] = useState(0);
   const [mobileFeatureIndex, setMobileFeatureIndex] = useState(0);
   const [shouldAnimateBackground, setShouldAnimateBackground] = useState(false);
+  const [isCatSidebarOpen, setIsCatSidebarOpen] = useState(false);
+
+  // Marquee center-spotlight refs
+  const catMarqueeContainerRef = React.useRef<HTMLDivElement>(null);
+  const catItemRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+  React.useEffect(() => {
+    let rafId: number;
+    const update = () => {
+      const container = catMarqueeContainerRef.current;
+      if (container) {
+        const parentRect = container.getBoundingClientRect();
+        const centerX = parentRect.left + parentRect.width / 2;
+        const radius = parentRect.width * 0.22;
+        catItemRefs.current.forEach(item => {
+          if (!item) return;
+          const r = item.getBoundingClientRect();
+          const dist = Math.abs((r.left + r.width / 2) - centerX);
+          const t = Math.max(0, 1 - dist / radius);
+          item.style.transform = `scale(${0.8 + t * 0.7})`;
+          item.style.opacity = `${0.35 + t * 0.65}`;
+        });
+      }
+      rafId = requestAnimationFrame(update);
+    };
+    rafId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
 
   const mobileFeatures = [
     { id: 1, icon: Leaf, title: 'Fresh', subtitle: 'We use handpicked, locally sourced ingredients for every mea' },
@@ -64,35 +91,45 @@ export default function StorePage({
     { id: 4, icon: Truck, title: 'Delivery', subtitle: 'Order fresh food and get it delivered straight to your door.' }
   ];
 
+  const CATEGORY_IMAGES: Record<string, string> = {
+    'All': '/logo.jpeg',
+    'Produce': '/plantain.jpeg',
+    'Vegetables': '/efo-riro.jpeg',
+    'Protein': '/smokedfish.jpeg.jpeg',
+    'Grains': '/garri.jpeg',
+    'Spices': '/freshscotchpepper.jpeg',
+    'Oils': '/tomato.jpeg',
+    'Herbs': '/bitterleaf.jpeg'
+  };
+
   const HERO_SLIDES = [
     {
-      label: "Authentic African",
-      title: "Fresh Groceries.",
-      description: "Experience authentic African food products, from dried foodstuffs to fresh ingredients.",
-      image: "/bac2.png",
-      badgeText: "Fresh",
-      badgeLabel: "Daily",
-      bgGradient: "from-paper via-paper to-highlight/10"
+      label: "Authentic Heritage",
+      title: "The Heart of the Feast.",
+      description: "",
+      image: "/meat.png",
+      badge: "Grass-Fed Certified",
+      micro: "Fresh Harvest Daily",
+      mobilePosition: "center 40%"
     },
     {
-      label: "Premium Quality",
-      title: "Traditional Taste.",
-      description: "Hand-picked African ingredients bringing heritage to your kitchen.",
-      image: "/bac3.png",
-      badgeText: "Authentic",
-      badgeLabel: "African",
-      bgGradient: "from-paper via-paper to-ink/5"
+      label: "Market Curation",
+      title: "The Market Basket.",
+      description: "",
+      image: "/provision.png",
+      badge: "Hand-Picked Selection",
+      micro: "Heritage Provisions"
     },
     {
-      label: "Affordable Prices",
-      title: "Community First.",
-      description: "Quality African products at friendly prices for our community.",
-      image: "/bac3.png",
-      badgeText: "Value",
-      badgeLabel: "Best",
-      bgGradient: "from-paper via-paper to-highlight/5"
+      label: "Savor & Crunch",
+      title: "The Snack Gallery.",
+      description: "",
+      image: "/snacks.png",
+      badge: "Elite Crunch",
+      micro: "Artisanal Delights"
     }
   ];
+
 
   // Mobile features auto-scroll enabled
   React.useEffect(() => {
@@ -210,297 +247,350 @@ export default function StorePage({
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden bg-ink">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
-            className="absolute inset-0"
-          >
-            {/* Full-screen Background Image with Parallax-ready Scale */}
-            <div className="absolute inset-0 overflow-hidden">
-              <motion.img
-                src={HERO_SLIDES[currentSlide].image}
-                alt="Background"
-                initial={{ scale: 1.2, opacity: 0 }}
-                animate={{ scale: 1, opacity: 0.7 }}
-                transition={{ duration: 2, ease: [0.23, 1, 0.32, 1] }}
-                className="w-full h-full object-cover filter brightness-[0.6] sepia-[20%]"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" />
-            </div>
+      {/* Hero Section - Bento Box Grid */}
+      <section className="relative pt-24 lg:pt-40 pb-16 lg:pb-24 bg-[#FAF6F0] overflow-hidden">
 
-            <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex flex-col justify-center pt-24">
-              <div className="max-w-4xl">
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5, duration: 1 }}
-                  className="flex items-center gap-6 mb-10"
-                >
-                  <div className="w-16 h-1 bg-accent" />
-                  <span className="text-[12px] uppercase tracking-[0.6em] font-black text-accent">
-                    {HERO_SLIDES[currentSlide].label}
-                  </span>
-                </motion.div>
-
-                <h1 className="text-white mb-12 flex flex-wrap heading-electric">
-                  {HERO_SLIDES[currentSlide].title.split(' ').map((word, i) => (
-                    <div key={i} className="overflow-hidden inline-block mr-6 lg:mr-8">
-                      <motion.span
-                        initial={{ y: "110%", rotate: 15 }}
-                        animate={{ y: 0, rotate: 0 }}
-                        transition={{
-                          delay: 0.6 + i * 0.1,
-                          duration: 1.8,
-                          ease: [0.16, 1, 0.3, 1]
-                        }}
-                        className="block origin-left"
-                      >
-                        {word === "Groceries." ? (
-                          <span className="text-accent relative decoration-2 underline-offset-[12px] decoration-accent/20">
-                            {word}
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: "100%" }}
-                              transition={{ delay: 1.5, duration: 1.5 }}
-                              className="absolute -bottom-4 left-0 h-1 bg-accent/40"
-                            />
-                          </span>
-                        ) : word}
-                      </motion.span>
-                    </div>
-                  ))}
-                </h1>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-col sm:flex-row gap-16 items-start sm:items-center"
-                >
-                  <motion.button
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => {
-                      document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="btn-elite group"
-                  >
-                    <span>Explore Collection</span>
-                  </motion.button>
-                  <p className="max-w-md text-base lg:text-xl font-medium text-white/70 leading-relaxed font-serif italic border-l-2 border-accent/30 pl-8">
-                    {HERO_SLIDES[currentSlide].description}
-                  </p>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Cinematic Slide Indicators */}
-        <div className="absolute bottom-12 right-12 z-30 flex flex-col gap-6">
-          {HERO_SLIDES.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className="group relative flex items-center justify-end"
-            >
-              <span className={`text-[10px] font-black tracking-widest mr-4 transition-all duration-500 ${currentSlide === index ? 'text-accent opacity-100' : 'text-white/20 opacity-0 group-hover:opacity-100'
-                }`}>
-                0{index + 1}
-              </span>
-              <div className={`h-12 w-px transition-all duration-700 ${currentSlide === index ? 'bg-accent scale-y-125' : 'bg-white/10 group-hover:bg-white/30'
-                }`} />
-            </button>
-          ))}
-        </div>
-
-        {/* Mobile Hero Navigation Arrows */}
-        <div className="absolute inset-y-0 left-6 right-6 z-40 flex items-center justify-between pointer-events-none lg:hidden">
-          <motion.button
-            whileTap={{ scale: 0.9, background: "var(--color-gold-glimmer)" }}
-            onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-            className="w-14 h-14 border border-white/10 rounded-full flex items-center justify-center text-white/40 bg-ink/30 backdrop-blur-xl pointer-events-auto transition-all duration-500"
-          >
-            <ChevronRight className="w-6 h-6 rotate-180" />
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.9, background: "var(--color-gold-glimmer)" }}
-            onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-            className="w-14 h-14 border border-white/10 rounded-full flex items-center justify-center text-white/40 bg-ink/30 backdrop-blur-xl pointer-events-auto transition-all duration-500"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </motion.button>
-        </div>
-
-        {/* Floating Narrative Branding */}
-        <div className="absolute bottom-12 left-12 z-30 hidden lg:flex items-center gap-12">
-          <div className="flex gap-4">
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-              className="w-20 h-20 border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all duration-700 hover:bg-white/5 backdrop-blur-md"
-            >
-              <ChevronRight className="w-6 h-6 rotate-180" />
-            </button>
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-              className="w-20 h-20 border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:border-white transition-all duration-700 hover:bg-white/5 backdrop-blur-md"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
+        {/* ── Category Sidebar Trigger ── */}
+        <button
+          onClick={() => setIsCatSidebarOpen(true)}
+          className="absolute left-4 lg:left-6 top-28 lg:top-44 z-30 bg-white/90 backdrop-blur-md border border-ink/10 shadow-xl rounded-2xl w-12 h-12 flex flex-col items-center justify-center gap-1.5 hover:bg-ink hover:border-transparent group transition-all duration-300"
+          title="Browse Categories"
+        >
+          <div className="grid grid-cols-2 gap-[3px]">
+            <div className="w-2 h-2 rounded-sm bg-ink/50 group-hover:bg-white transition-colors" />
+            <div className="w-2 h-2 rounded-sm bg-ink/50 group-hover:bg-white transition-colors" />
+            <div className="w-2 h-2 rounded-sm bg-accent group-hover:bg-accent transition-colors" />
+            <div className="w-2 h-2 rounded-sm bg-ink/50 group-hover:bg-white transition-colors" />
           </div>
-          <div className="h-px w-32 bg-white/10" />
-          <span className="text-[10px] uppercase tracking-[0.5em] font-black text-white/20 whitespace-nowrap">Scroll for Masterpieces</span>
+        </button>
+        <div className="lg:hidden relative h-[65vh] min-h-[500px] w-full overflow-hidden shadow-2xl z-10">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, x: 50, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -50, scale: 0.98 }}
+              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              className="absolute inset-0 w-full h-full"
+            >
+              {currentSlide === 0 && (
+                <div className="w-full h-full bg-black p-8 pt-12 relative overflow-hidden flex flex-col justify-between">
+                  <img src="/meat.png" alt="Meat Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                  <div className="relative z-10 max-w-lg mt-auto">
+                    <p className="text-white/90 font-bold text-sm mb-4 tracking-wide shadow-black drop-shadow-md">Fresh Deals, Every Day</p>
+                    <h1 className="text-[#FFEB3B] text-4xl sm:text-5xl font-black leading-[0.9] mb-4 tracking-tight drop-shadow-lg shadow-black">
+                      Fresh Meat<br />Premium Quality
+                    </h1>
+                    <p className="text-white text-lg mb-8 font-medium drop-shadow-md shadow-black">Best Meat Deals Today</p>
+                    <button className="bg-white text-[#6b2118] px-8 py-3 rounded-full font-bold text-base w-fit shadow-xl hover:scale-105 transition-transform">
+                      Order Today
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {currentSlide === 1 && (
+                <div className="w-full h-full bg-[#111] p-8 pt-12 relative overflow-hidden flex flex-col items-center justify-start text-center">
+                  <img src="/snacks.png" alt="Snacks Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none" />
+                  <div className="relative z-10 w-full mb-4 mt-8">
+                    <p className="text-white font-bold text-[10px] uppercase tracking-widest mb-3 drop-shadow-lg shadow-black">Hot Deals This Week</p>
+                    <h2 className="text-white text-5xl font-black leading-tight mb-8 drop-shadow-xl shadow-black">Best Value,<br />Every Basket</h2>
+                    <button className="bg-white text-[#6b2118] px-8 py-3 rounded-full font-bold text-sm shadow-xl hover:scale-105 transition-transform">
+                      Shop Sale
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {currentSlide === 2 && (
+                <div className="w-full h-full bg-[#111] p-8 pt-12 relative overflow-hidden flex flex-col items-start justify-start text-left">
+                  <img src="/provision.png" alt="Provisions Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none" />
+                  <div className="relative z-10 w-full mt-8">
+                    <p className="text-white/90 font-bold text-[10px] uppercase tracking-widest mb-3 drop-shadow-lg shadow-black">Rice & Flour Essentials</p>
+                    <h2 className="text-white text-5xl font-black leading-tight mb-8 drop-shadow-xl shadow-black">Quality Staples<br />Better Value</h2>
+                    <div className="bg-[#FFEB3B]/20 backdrop-blur-md px-6 py-3 rounded-xl w-fit border border-[#FFEB3B]/30 shadow-2xl">
+                      <p className="text-[#FFEB3B] font-black text-xl">Starting at £10</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Mobile Hero Navigation Arrows */}
+          <div className="absolute inset-y-0 left-2 right-2 z-40 flex items-center justify-between pointer-events-none">
+            <motion.button
+              whileTap={{ scale: 0.9, background: "var(--color-gold-glimmer)" }}
+              onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+              className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center text-white bg-ink/30 backdrop-blur-xl pointer-events-auto shadow-md"
+            >
+              <ChevronRight className="w-5 h-5 rotate-180" />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.9, background: "var(--color-gold-glimmer)" }}
+              onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
+              className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center text-white bg-ink/30 backdrop-blur-xl pointer-events-auto shadow-md"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </motion.button>
+          </div>
         </div>
 
-        {/* Parallax Dust Particles */}
-        <div className="absolute inset-0 z-20 pointer-events-none opacity-30">
-          {[...Array(6)].map((_, i) => (
+        {/* --- Desktop Container --- */}
+        <div className="max-w-[1400px] mx-auto px-6">
+
+          {/* --- Desktop: Bento Grid (Static 3-Column) --- */}
+          <div className="hidden lg:grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-2 gap-4 lg:gap-6 lg:h-[600px] mt-4">
+            {/* Card 1: Main (Left) */}
             <motion.div
-              key={i}
-              animate={{
-                y: [0, -40, 0],
-                x: [0, 20, 0],
-                opacity: [0.2, 0.5, 0.2]
-              }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-2 lg:row-span-2 bg-[#111] rounded-[2rem] p-8 lg:p-14 relative overflow-hidden flex flex-col justify-between shadow-2xl group"
+            >
+              <img src="/meat.png" alt="Meat Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110 group-hover:scale-100" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+
+              <div className="relative z-10 max-w-lg mt-auto mb-10">
+                <p className="text-white/90 font-bold text-sm mb-4 tracking-wide shadow-black drop-shadow-md">Fresh Deals, Every Day</p>
+                <h1 className="text-[#FFEB3B] text-5xl lg:text-[5.5rem] font-black leading-[0.9] mb-6 tracking-tight drop-shadow-xl shadow-black">
+                  Fresh Meat<br />Premium Quality
+                </h1>
+                <p className="text-white text-xl mb-10 font-medium shadow-black drop-shadow-lg">Best Meat Deals Today</p>
+                <button className="bg-white text-[#6b2118] px-10 py-4 rounded-full font-bold text-lg w-fit hover:scale-105 active:scale-95 transition-all shadow-xl">
+                  Order Today
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Card 2: Top Right */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-1 lg:row-span-1 bg-[#111] rounded-[2rem] p-8 relative overflow-hidden flex flex-col items-center justify-center text-center h-[350px] lg:h-auto shadow-xl group"
+            >
+              <img src="/snacks.png" alt="Snacks Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110 group-hover:scale-100" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none" />
+
+              <div className="relative z-10 w-full">
+                <p className="text-white font-bold text-[10px] uppercase tracking-widest mb-3 drop-shadow-lg shadow-black">Hot Deals This Week</p>
+                <h2 className="text-white text-3xl xl:text-5xl font-black leading-tight mb-6 drop-shadow-xl shadow-black">Best Value,<br />Every Basket</h2>
+                <button className="bg-white text-[#6b2118] px-8 py-3 rounded-full font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-xl">
+                  Shop Sale
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Card 3: Bottom Right */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-1 lg:row-span-1 bg-[#111] rounded-[2rem] p-8 relative overflow-hidden flex flex-col items-start justify-center text-left h-[350px] lg:h-auto shadow-xl group"
+            >
+              <img src="/provision.png" alt="Provisions Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110 group-hover:scale-100" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none" />
+
+              <div className="relative z-10 w-full">
+                <p className="text-white/90 font-bold text-[10px] uppercase tracking-widest mb-4 drop-shadow-lg shadow-black">Rice & Flour Essentials</p>
+                <h2 className="text-white text-3xl xl:text-5xl font-black leading-tight mb-8 drop-shadow-xl shadow-black">Quality Staples<br />Better Value</h2>
+                <div className="bg-[#FFEB3B]/20 backdrop-blur-md px-6 py-3 rounded-xl w-fit border border-[#FFEB3B]/30 shadow-2xl">
+                  <p className="text-[#FFEB3B] font-black text-xl">Starting at £10</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Category Row — True Infinite Marquee */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="-mt-20 lg:-mt-28 mb-4 w-full relative flex items-center overflow-hidden py-8 z-20"
+            style={{ height: '200px' }}
+            ref={catMarqueeContainerRef}
+          >
+            {/* Gradient fade edges */}
+            <div className="absolute inset-y-0 left-0 w-24 lg:w-48 bg-gradient-to-r from-[#FAF6F0] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-24 lg:w-48 bg-gradient-to-l from-[#FAF6F0] to-transparent z-10 pointer-events-none" />
+
+            {/* Marquee track — duplicated for seamless loop */}
+            <motion.div
+              className="flex items-center gap-0 shrink-0"
+              animate={{ x: ['0%', '-50%'] }}
               transition={{
-                duration: 5 + i * 2,
+                duration: 18,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: 'linear',
+                repeatType: 'loop',
               }}
-              className={`absolute w-1 h-1 bg-accent rounded-full blur-[2px] particle-${i + 1}`}
-            />
-          ))}
+              style={{ width: 'max-content' }}
+            >
+              {[...CATEGORIES.filter(c => c !== 'All'), ...CATEGORIES.filter(c => c !== 'All')].map((category, idx) => (
+                <div
+                  key={`cat-${idx}`}
+                  ref={el => { catItemRefs.current[idx] = el; }}
+                  className="w-[140px] lg:w-[160px] flex flex-col items-center justify-center cursor-pointer shrink-0"
+                  style={{ willChange: 'transform, opacity', transition: 'none' }}
+                  onClick={() => {
+                    setSelectedCategory(category as Category);
+                    document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full p-1 border-2 border-transparent hover:border-[#6b2118] bg-white shadow-md hover:shadow-xl transition-all duration-300">
+                    <img
+                      src={CATEGORY_IMAGES[category] || '/logo.jpeg'}
+                      alt={category}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  </div>
+                  <span className="mt-3 text-[10px] lg:text-[11px] font-black uppercase tracking-[0.2em] text-ink/60">
+                    {category}
+                  </span>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
 
 
-      {/* 10/10 Professional Elite: Frosted Crystal Feature Strip - REFINED */}
-      <section className="relative z-50 -mt-24 lg:-mt-32 px-6">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-white/90 backdrop-blur-3xl border-2 border-white/60 shadow-elite rounded-[2rem] overflow-hidden"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x-[3px] lg:divide-x-[4px] divide-line">
-              {mobileFeatures.map((feature, index) => (
-                <ProfessionalFeatureItem key={feature.id} feature={feature} index={index} />
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>    {/* 10/10 Absolute Beauty: Heavenly Hot Deals */}
-      <section className="py-24 lg:py-40 bg-white relative overflow-hidden group/section">
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row justify-between items-end mb-24 lg:mb-32 gap-12 relative">
+      {/* ✦ ELEVATED: Hot Deals — Luxury Editorial Dark Showcase ✦ */}
+      <section className="bg-[#0a0a0a] relative overflow-hidden">
+        {/* Subtle noise texture */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")`, backgroundSize: '200px' }} />
+
+        {/* Glowing accent blob */}
+        <motion.div
+          animate={{ opacity: [0.08, 0.15, 0.08], scale: [1, 1.15, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-200px] right-[-100px] w-[600px] h-[600px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, var(--color-accent) 0%, transparent 70%)' }}
+        />
+
+        <div className="max-w-[1400px] mx-auto px-6">
+          {/* Header row */}
+          <div className="flex items-end justify-between pt-16 lg:pt-24 pb-12 lg:pb-16 border-b border-white/[0.06]">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-3xl"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-[12px] uppercase tracking-[0.6em] font-black text-accent">Hot Deals</span>
-                <div className="w-12 h-[2px] bg-accent" />
-              </div>
-              <h2 className="text-6xl lg:text-8xl font-black tracking-[-0.04em] leading-[0.9] text-ink uppercase">
-                Latest <br />
-                <span className="text-accent italic font-serif lowercase tracking-normal block">Arrivals.</span>
+              <p className="text-accent text-[9px] lg:text-[11px] font-black uppercase tracking-[0.8em] mb-4">Hot Deals · Latest Arrivals</p>
+              <h2 className="text-white text-4xl sm:text-5xl lg:text-[5.5rem] font-black tracking-[-0.04em] leading-none uppercase">
+                Fresh<br className="lg:hidden" /> <span className="text-transparent lg:text-accent" style={{ WebkitTextStroke: '2px var(--color-accent)' }}>picks.</span>
               </h2>
             </motion.div>
-            <motion.p
+
+            <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 1 }}
-              className="max-w-xs text-lg text-ink/40 font-serif italic border-l-[2px] border-accent/30 pl-8 leading-relaxed mb-4"
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="hidden lg:block text-right"
             >
-              Purely harvested treasures, curated for absolute freshness and quality.
-            </motion.p>
+              <p className="text-white/20 text-sm font-serif italic leading-relaxed max-w-[220px] text-right mb-5">
+                Purely harvested treasures, curated for absolute freshness.
+              </p>
+              <motion.button
+                whileHover={{ x: 6 }}
+                onClick={() => document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex items-center gap-3 text-white/50 hover:text-accent transition-all duration-500 text-[11px] font-black uppercase tracking-[0.4em] ml-auto"
+              >
+                View All <ArrowRight className="w-4 h-4" />
+              </motion.button>
+            </motion.div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
+
+          {/* Cards Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-white/[0.06] pb-16 lg:pb-24">
             {dealProducts.slice(0, 3).map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 1, delay: index * 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative cursor-pointer"
+                transition={{ duration: 0.9, delay: 0.1 * index, ease: [0.16, 1, 0.3, 1] }}
                 onClick={() => openProductDetails(product)}
+                className="group cursor-pointer py-10 lg:py-14 px-0 lg:px-10 first:lg:pl-0 last:lg:pr-0 relative flex flex-col gap-8"
               >
-                <div className="relative aspect-square overflow-hidden bg-surface mb-8 border-[0.5px] border-line/30 group-hover:border-accent transition-all duration-700 shadow-none hover:shadow-[0_0_80px_-20px_rgba(var(--color-accent-rgb),0.2)]">
+                {/* Hover shimmer line */}
+                <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full bg-accent transition-all duration-700 ease-out" />
+
+                {/* Index number */}
+                <div className="flex items-center justify-between">
+                  <span className="text-white/10 text-[80px] lg:text-[100px] font-black leading-none select-none -mt-4"
+                    style={{ fontVariantNumeric: 'tabular-nums' }}>
+                    0{index + 1}
+                  </span>
+                  <div className="bg-accent/10 border border-accent/30 text-accent text-[9px] font-black uppercase tracking-[0.3em] px-3 py-1.5 rounded-full self-start mt-2">
+                    -{product.discount}%
+                  </div>
+                </div>
+
+                {/* Product image — compact & beautiful */}
+                <div className="relative w-full aspect-square max-h-[280px] lg:max-h-[240px] overflow-hidden rounded-2xl bg-white/5 flex-shrink-0">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
-                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
                   />
-                  <div className="absolute top-6 right-6">
-                    <span className="text-[10px] font-black tracking-[0.4em] uppercase text-accent bg-white/90 backdrop-blur-sm px-4 py-1.5 border border-accent/20">
-                      -{product.discount}%
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-colors duration-700" />
+                  {/* Subtle gradient at image bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
 
-                <div className="space-y-4 px-2">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-2xl font-black uppercase tracking-tighter text-ink group-hover:text-accent transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-[10px] uppercase font-black tracking-[0.4em] text-ink/20">Heavenly Select</p>
-                    </div>
-                    <p className="text-2xl font-black text-ink">${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}</p>
+                {/* Content block */}
+                <div className="flex flex-col gap-4 flex-1">
+                  <div>
+                    <p className="text-white/30 text-[9px] font-black uppercase tracking-[0.6em] mb-2">Heritage Select</p>
+                    <h3 className="text-white text-2xl lg:text-3xl font-black uppercase leading-tight tracking-tight group-hover:text-accent transition-colors duration-500">
+                      {product.name}
+                    </h3>
                   </div>
 
-                  <div className="flex items-center gap-4 pt-4 opacity-0 group-hover:opacity-100 transition-all transform translate-y-4 group-hover:translate-y-0">
-                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-accent">Order Now</span>
-                    <div className="h-[1px] flex-grow bg-accent/20" />
-                    <ArrowRight className="w-4 h-4 text-accent" />
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.08]">
+                    <div className="flex flex-col">
+                      <span className="text-white/25 line-through text-sm font-bold">${product.price.toFixed(2)}</span>
+                      <span className="text-accent text-2xl lg:text-3xl font-black leading-none">${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}</span>
+                    </div>
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: -10 }}
+                      className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-accent group-hover:border-accent transition-all duration-500"
+                    >
+                      <ArrowRight className="w-5 h-5 text-white" />
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mt-32 text-center"
-          >
+          {/* Mobile CTA */}
+          <div className="lg:hidden pb-10 text-center border-t border-white/[0.06] pt-8">
             <button
-              onClick={() => {
-                const el = document.getElementById('shop-grid');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="group relative py-4 px-12 border-[0.5px] border-ink/20 hover:border-accent transition-all duration-700"
+              onClick={() => document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex items-center gap-3 text-white/50 hover:text-accent transition-all duration-500 text-[11px] font-black uppercase tracking-[0.4em] mx-auto"
             >
-              <span className="text-[11px] font-black uppercase tracking-[0.8em] text-ink group-hover:text-accent transition-colors">View All Arrivals</span>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-accent group-hover:w-full transition-all duration-700" />
+              View All Arrivals <ArrowRight className="w-4 h-4" />
             </button>
-          </motion.div>
+          </div>
         </div>
       </section>
       {/* 10/10 Mastercraft: Shop Gallery */}
-      <main id="shop-grid" className="py-24 lg:py-64 bg-white relative overflow-hidden">
+      <main id="shop-grid" className="py-16 lg:py-64 bg-white relative overflow-hidden">
         {/* Spectral Grain Overlay */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply"
           style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")`, backgroundSize: '200px' }} />
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col space-y-16 mb-24 lg:mb-40">
-            <div className="flex flex-col lg:flex-row justify-between items-end gap-12">
+          <div className="flex flex-col space-y-10 lg:space-y-16 mb-14 lg:mb-40">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 lg:gap-12">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -510,7 +600,7 @@ export default function StorePage({
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-[12px] uppercase tracking-[0.6em] font-black text-accent">Selection</span>
                 </div>
-                <h2 className="text-6xl lg:text-[8rem] leading-[0.8] font-black tracking-[-0.05em] text-ink uppercase">
+                <h2 className="text-[3.5rem] lg:text-[8rem] leading-[0.8] font-black tracking-[-0.05em] text-ink uppercase">
                   Shop <br />
                   <motion.span
                     animate={{
@@ -603,7 +693,7 @@ export default function StorePage({
       </main>
 
       {/* Elite Masterpiece Footer: 10/10 Grandeur */}
-      <footer className="py-24 lg:py-64 bg-ink text-white overflow-hidden relative">
+      <footer className="py-16 lg:py-64 bg-ink text-white overflow-hidden relative">
         {/* Cinematic Light Pools */}
         <motion.div
           animate={{
@@ -617,9 +707,9 @@ export default function StorePage({
           style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")`, backgroundSize: '200px' }} />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex flex-col space-y-32">
+          <div className="flex flex-col space-y-16 lg:space-y-32">
             {/* Massive Branding Header */}
-            <div className="border-b border-white/5 pb-24 lg:pb-40">
+            <div className="border-b border-white/5 pb-12 lg:pb-40">
               <motion.h2
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -631,7 +721,7 @@ export default function StorePage({
               </motion.h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-32">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-32">
               <div className="lg:col-span-5 space-y-16">
                 <p className="max-w-md text-white/40 font-serif italic text-2xl lg:text-3xl leading-relaxed">
                   "Transmitting the vibrant essence of African culinary heritage to the global table."
@@ -702,7 +792,7 @@ export default function StorePage({
             </div>
           </div>
 
-          <div className="mt-64 pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="mt-16 lg:mt-64 pt-10 lg:pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 lg:gap-12">
             <p className="text-[10px] font-black text-white/5 uppercase tracking-[0.5em]">© 2026 F2 Protein Group. Masterpiece Design v10.</p>
             <div className="flex gap-20 text-[11px] font-black text-white/40 uppercase tracking-[0.4em]">
               <motion.a href="#" whileHover={{ color: "white", scale: 1.1 }} className="transition-all">Legal</motion.a>
@@ -830,27 +920,7 @@ const ProductCard: React.FC<{
   addToCart: (p: Product, q?: number) => void;
   openProductDetails: (p: Product) => void;
 }> = ({ product, index, addToCart, openProductDetails }) => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
   const [isAdded, setIsAdded] = useState(false);
-
-  const rotateX = useTransform(mouseY, [0, 400], [8, -8]);
-  const rotateY = useTransform(mouseX, [0, 300], [-8, 8]);
-
-  const springConfig = { damping: 30, stiffness: 300 };
-  const springRotateX = useSpring(rotateX, springConfig);
-  const springRotateY = useSpring(rotateY, springConfig);
-
-  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
-  }
-
-  function handleMouseLeave() {
-    mouseX.set(150);
-    mouseY.set(200);
-  }
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -865,133 +935,83 @@ const ProductCard: React.FC<{
       layout
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{
-        duration: 0.8,
-        delay: index % 4 * 0.1,
-        ease: [0.16, 1, 0.3, 1]
-      }}
-      style={{
-        perspective: 1200,
-      }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.7, delay: (index % 8) * 0.07, ease: [0.16, 1, 0.3, 1] }}
       className="group relative cursor-pointer"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       onClick={() => openProductDetails(product)}
     >
-      <motion.div
-        style={{
-          rotateX: springRotateX,
-          rotateY: springRotateY,
-          transformStyle: "preserve-3d",
-        }}
-        className="relative"
-      >
-        {/* Floating Frame Aesthetic with Prismatic Depth */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-surface border-[0.5px] border-ink/5 group-hover:border-accent transition-all duration-1000 ease-out shadow-none hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)]">
-          <motion.img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-[2000ms]"
-            referrerPolicy="no-referrer"
-          />
+      {/* Image container — compact square */}
+      <div className="relative aspect-square overflow-hidden bg-[#F5F0EB] rounded-2xl mb-4">
+        <motion.img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-110"
+          referrerPolicy="no-referrer"
+        />
 
-          {/* Prismatic Light Sweep */}
-          <motion.div
-            style={{
-              background: 'radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, rgba(255,165,0,0.05) 30%, transparent 70%)',
-              left: mouseX,
-              top: mouseY,
-              translateX: '-50%',
-              translateY: '-50%',
-            }}
-            className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700 w-80 h-80 blur-[60px]"
-          />
+        {/* Subtle hover vignette */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-700 pointer-events-none rounded-2xl" />
 
-          {/* Glass Glint Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
-
-          <div className="absolute top-6 left-6 flex flex-col gap-2 z-20">
-            {product.discount && (
-              <span className="text-[10px] font-black uppercase tracking-widest text-accent bg-white/94 px-3 py-1 border border-accent/10 backdrop-blur-sm">
-                -{product.discount}%
-              </span>
-            )}
-            <span className="text-[8px] font-black uppercase tracking-[0.4em] text-ink/40 bg-white/94 px-3 py-1 border border-ink/5 backdrop-blur-sm">
-              {product.weight}
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          {product.discount && (
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white bg-accent px-2.5 py-1 rounded-full shadow-sm">
+              -{product.discount}%
             </span>
-          </div>
+          )}
+          <span className="text-[8px] font-black uppercase tracking-[0.3em] text-ink/50 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
+            {product.weight}
+          </span>
         </div>
 
-        <div className="mt-8 px-1 space-y-4">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <h4 className="text-xl lg:text-2xl font-black uppercase tracking-tighter text-ink leading-none group-hover:text-accent transition-colors">
-                {product.name}
-              </h4>
-              <p className="text-[9px] font-black uppercase tracking-[0.5em] text-ink/20 italic">Brilliant Mastercraft</p>
-            </div>
-            <p className="text-2xl font-black text-ink tracking-tight">${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}</p>
-          </div>
-
-          <div className="flex items-center gap-4 pt-2 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-4 group-hover:translate-y-0">
-            <span className="text-[9px] font-black uppercase tracking-[0.6em] text-accent">Acquire Piece</span>
-            <div className="h-[0.5px] flex-grow bg-accent/20" />
-            <ArrowRight className="w-3 h-3 text-accent" />
-          </div>
-        </div>
-
-        {/* Electric Plus Button with Functional Feedback */}
+        {/* Add to cart button */}
         <motion.button
           onClick={handleAddToCart}
-          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{
-            opacity: 1,
-            x: 0,
-            backgroundColor: isAdded ? "var(--color-accent)" : "rgb(24, 24, 27)" // bg-ink
-          }}
-          className="absolute -top-4 -right-4 p-5 text-white rounded-full shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 z-50 transform translate-x-4 group-hover:translate-x-0"
+          className={`absolute bottom-3 right-3 z-20 w-10 h-10 rounded-full shadow-xl flex items-center justify-center transition-all duration-500 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 ${isAdded ? 'bg-accent' : 'bg-[#111] hover:bg-accent'}`}
         >
-          {isAdded ? (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            >
-              <ShoppingCart className="w-6 h-6 stroke-[3px]" />
-            </motion.div>
-          ) : (
-            <Plus className="w-6 h-6 stroke-[4px]" />
-          )}
-
-          <motion.div
-            animate={{
-              scale: isAdded ? [1, 1.5, 1.2] : [1, 1.2, 1],
-              opacity: isAdded ? [0.4, 0.8, 0.4] : [0.1, 0.2, 0.1]
-            }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="absolute inset-0 rounded-full bg-accent -z-10 blur-xl"
-          />
+          <AnimatePresence mode="wait">
+            {isAdded ? (
+              <motion.div key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                <ShoppingCart className="w-4 h-4 text-white stroke-[2.5px]" />
+              </motion.div>
+            ) : (
+              <motion.div key="plus" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                <Plus className="w-4 h-4 text-white stroke-[3px]" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.button>
+      </div>
 
-        {/* Success Toast Interaction */}
-        <AnimatePresence>
-          {isAdded && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-full text-center"
-            >
-              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-accent bg-white px-4 py-2 border border-accent/10 shadow-xl">
-                Added to Selection
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+      {/* Info row */}
+      <div className="px-1">
+        <div className="flex items-start justify-between gap-2 mb-1">
+          <h4 className="text-base font-black uppercase tracking-tight text-ink leading-tight group-hover:text-accent transition-colors duration-300 flex-1">
+            {product.name}
+          </h4>
+          <p className="text-base font-black text-ink whitespace-nowrap shrink-0">
+            ${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}
+          </p>
+        </div>
+        <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-ink/30">{product.category}</p>
+      </div>
+
+      {/* Success toast */}
+      <AnimatePresence>
+        {isAdded && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap"
+          >
+            <span className="text-[8px] font-black uppercase tracking-[0.4em] text-accent bg-white px-4 py-1.5 border border-accent/15 shadow-lg rounded-full">
+              Added ✓
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

@@ -137,6 +137,78 @@ export const PRODUCTS: Product[] = [
     stock: 60,
     nutritionalInfo: { calories: '7', fat: '0.1g', carbs: '1.1g', protein: '0.9g' },
     reviews: []
+  },
+  {
+    id: '11',
+    name: 'Brown Beans',
+    price: 5.99,
+    category: 'Grains',
+    image: '/plantain.jpeg',
+    unit: 'kg',
+    description: 'Premium brown beans, high in protein and perfect for moin-moin or gbegiri.',
+    stock: 110,
+    nutritionalInfo: { calories: '347', fat: '1.2g', carbs: '63g', protein: '21g' },
+    reviews: []
+  },
+  {
+    id: '12',
+    name: 'Egusi (Melon Seeds)',
+    price: 12.99,
+    category: 'Spices',
+    image: '/efo-riro.jpeg',
+    unit: 'kg',
+    description: 'Ground melon seeds, the heart of traditional Egusi soup.',
+    stock: 55,
+    nutritionalInfo: { calories: '567', fat: '47g', carbs: '15g', protein: '24g' },
+    reviews: []
+  },
+  {
+    id: '13',
+    name: 'Crayfish',
+    price: 7.49,
+    category: 'Protein',
+    image: '/smokedfish.jpeg.jpeg',
+    unit: 'pack',
+    description: 'Ground dried crayfish, essential seasoning for African stews.',
+    stock: 130,
+    nutritionalInfo: { calories: '88', fat: '1.4g', carbs: '0g', protein: '18g' },
+    reviews: []
+  },
+  {
+    id: '14',
+    name: 'Honey Beans',
+    price: 6.49,
+    category: 'Grains',
+    image: '/garri.jpeg',
+    unit: 'kg',
+    description: 'Sweet Oloyin beans, famous for their natural honey-like taste.',
+    stock: 90,
+    nutritionalInfo: { calories: '341', fat: '1.1g', carbs: '61g', protein: '22g' },
+    reviews: []
+  },
+  {
+    id: '15',
+    name: 'African Nutmeg',
+    price: 3.99,
+    category: 'Spices',
+    image: '/freshscotchpepper.jpeg',
+    unit: 'pack',
+    description: 'Monodora myristica (Ehuru), aromatic spice for authentic flavor.',
+    stock: 80,
+    nutritionalInfo: { calories: '525', fat: '36g', carbs: '49g', protein: '6g' },
+    reviews: []
+  },
+  {
+    id: '16',
+    name: 'Red Onions',
+    price: 1.49,
+    category: 'Produce',
+    image: '/tomato.jpeg',
+    unit: 'lb',
+    description: 'Fresh, sharp red onions for everyday cooking.',
+    stock: 200,
+    nutritionalInfo: { calories: '40', fat: '0.1g', carbs: '9g', protein: '1.1g' },
+    reviews: []
   }
 ];
 
