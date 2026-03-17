@@ -85,4 +85,13 @@ export interface CartItem extends Product {
   quantity: number;
 }
 
-export type Category = 'All' | 'Fruits' | 'Vegetables' | 'Dairy' | 'Bakery' | 'Meat' | 'Pantry';
+export type Category = 
+  | 'All' 
+  | 'Meat, Fish & Poultry' 
+  | 'Vegetable & Fresh Produce' 
+  | 'Drinks and Beverages' 
+  | 'Grains and Flours' 
+  | 'Cooking Condiments' 
+  | 'Snacks and Confectionaries' 
+  | 'Groceries' 
+  | 'Ready meals';

@@ -21,6 +21,7 @@ import {
 import { PRODUCTS, CATEGORIES } from '../constants';
 import { Product, CartItem, Category } from '../types';
 import F2ProteinSection from '../components/F2ProteinSection';
+import CategorySidebar from '../components/CategorySidebar';
 
 interface StorePageProps {
   searchQuery: string;
@@ -99,13 +100,14 @@ export default function StorePage({
 
   const CATEGORY_IMAGES: Record<string, string> = {
     'All': '/logo.jpeg',
-    'Produce': '/plantain.jpeg',
-    'Vegetables': '/efo-riro.jpeg',
-    'Protein': '/smokedfish.jpeg.jpeg',
-    'Grains': '/garri.jpeg',
-    'Spices': '/freshscotchpepper.jpeg',
-    'Oils': '/tomato.jpeg',
-    'Herbs': '/bitterleaf.jpeg'
+    'Meat, Fish & Poultry': '/smokedfish.jpeg.jpeg',
+    'Vegetable & Fresh Produce': '/plantain.jpeg',
+    'Drinks and Beverages': '/efo-riro.jpeg',
+    'Grains and Flours': '/garri.jpeg',
+    'Cooking Condiments': '/freshscotchpepper.jpeg',
+    'Snacks and Confectionaries': '/tomato.jpeg',
+    'Groceries': '/bitterleaf.jpeg',
+    'Ready meals': '/efo-riro.jpeg'
   };
 
   const HERO_SLIDES = [
@@ -169,6 +171,12 @@ export default function StorePage({
 
   return (
     <>
+      <CategorySidebar
+        categories={CATEGORIES}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        setView={setView}
+      />
       <div className="noise" />
 
       {/* Navigation */}
@@ -261,218 +269,7 @@ export default function StorePage({
       </nav>
 
       {/* Hero Section - Bento Box Grid */}
-      <section className="relative pt-24 lg:pt-40 pb-16 lg:pb-24 bg-[#FAF6F0] overflow-hidden">
-
-        {/* ── Browse Products Sidebar Trigger ── */}
-        <button
-          onClick={() => setIsCatSidebarOpen(true)}
-          className="absolute left-4 lg:left-6 top-28 lg:top-44 z-30 bg-white/90 backdrop-blur-md border border-ink/10 shadow-xl rounded-2xl px-4 py-3 flex items-center gap-3 hover:bg-ink hover:border-transparent group transition-all duration-300 hover:shadow-2xl"
-          title="Browse Our Products"
-        >
-          <div className="grid grid-cols-2 gap-[3px]">
-            <div className="w-2 h-2 rounded-sm bg-ink/50 group-hover:bg-white transition-colors" />
-            <div className="w-2 h-2 rounded-sm bg-ink/50 group-hover:bg-white transition-colors" />
-            <div className="w-2 h-2 rounded-sm bg-accent group-hover:bg-accent transition-colors" />
-            <div className="w-2 h-2 rounded-sm bg-ink/50 group-hover:bg-white transition-colors" />
-          </div>
-          <div className=" sm:flex flex-col items-start">
-            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-ink/40 group-hover:text-white/60 transition-colors leading-none">Click to</span>
-            <span className="text-[11px] font-black uppercase tracking-[0.15em] text-ink group-hover:text-white transition-colors leading-tight">See Products</span>
-          </div>
-          <Eye className="w-4 h-4 text-ink/30 group-hover:text-accent transition-colors sm:hidden" />
-        </button>
-
-        {/* ── Product Sidebar Overlay ── */}
-        <AnimatePresence>
-          {isCatSidebarOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10000]"
-                onClick={() => setIsCatSidebarOpen(false)}
-              />
-
-              {/* Sidebar Panel */}
-              <motion.div
-                initial={{ x: '-100%', opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: '-100%', opacity: 0 }}
-                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                className="fixed top-0 left-0 bottom-0 w-[90vw] sm:w-[440px] lg:w-[500px] bg-white z-[10001] shadow-2xl flex flex-col overflow-hidden"
-              >
-                {/* Sidebar Header */}
-                <div className="relative bg-[#111] px-6 py-8 flex-shrink-0">
-                  {/* Decorative accent line */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent via-orange-400 to-accent" />
-
-                  <div className="flex items-start justify-between mb-6">
-                    <div>
-                      <p className="text-accent text-[9px] font-black uppercase tracking-[0.6em] mb-2">Browse</p>
-                      <h2 className="text-white text-2xl sm:text-3xl font-black uppercase tracking-tight leading-none">
-                        Our Products
-                      </h2>
-                      <p className="text-white/30 text-xs font-serif italic mt-2">
-                        {sidebarProducts.length} items available
-                      </p>
-                    </div>
-                    <motion.button
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => setIsCatSidebarOpen(false)}
-                      className="w-10 h-10 rounded-full bg-white/10 hover:bg-accent flex items-center justify-center text-white transition-colors duration-300"
-                    >
-                      <X className="w-5 h-5" />
-                    </motion.button>
-                  </div>
-
-                  {/* Search inside sidebar */}
-                  <div className="flex items-center bg-white/10 rounded-xl px-4 py-3 gap-3 group focus-within:bg-white/20 transition-colors">
-                    <Search className="w-4 h-4 text-white/40 group-focus-within:text-accent stroke-[2.5px]" />
-                    <input
-                      type="text"
-                      placeholder="Search products..."
-                      className="bg-transparent border-none focus:ring-0 text-sm text-white placeholder:text-white/30 w-full font-medium"
-                      value={sidebarSearch}
-                      onChange={(e) => setSidebarSearch(e.target.value)}
-                    />
-                    {sidebarSearch && (
-                      <button onClick={() => setSidebarSearch('')} className="text-white/40 hover:text-white">
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Category Pills */}
-                <div className="px-6 py-4 flex-shrink-0 border-b border-ink/5">
-                  <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                    {CATEGORIES.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => setSidebarCategory(category as Category)}
-                        className={`px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap rounded-full transition-all duration-300 border ${
-                          sidebarCategory === category
-                            ? 'bg-ink text-white border-ink'
-                            : 'bg-transparent text-ink/40 border-ink/10 hover:border-ink/30 hover:text-ink/70'
-                        }`}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Products Grid — Scrollable */}
-                <div className="flex-1 overflow-y-auto px-4 py-4">
-                  {sidebarProducts.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-3">
-                      {sidebarProducts.map((product, index) => (
-                        <motion.div
-                          key={product.id}
-                          initial={{ opacity: 0, y: 15 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: Math.min(index * 0.03, 0.3), ease: [0.16, 1, 0.3, 1] }}
-                          className="group cursor-pointer bg-[#FAFAFA] rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-transparent hover:border-accent/20"
-                          onClick={() => {
-                            openProductDetails(product);
-                            setIsCatSidebarOpen(false);
-                          }}
-                        >
-                          {/* Product Image */}
-                          <div className="relative aspect-square overflow-hidden bg-[#F0ECE6]">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                              referrerPolicy="no-referrer"
-                            />
-
-                            {/* Badges */}
-                            {product.discount && (
-                              <span className="absolute top-2 left-2 text-[8px] font-black uppercase tracking-wider text-white bg-accent px-2 py-0.5 rounded-full">
-                                -{product.discount}%
-                              </span>
-                            )}
-
-                            {/* Quick Add Button */}
-                            <motion.button
-                              whileTap={{ scale: 0.85 }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                addToCart(product);
-                              }}
-                              className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-ink/80 hover:bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
-                            >
-                              <Plus className="w-3.5 h-3.5 stroke-[3px]" />
-                            </motion.button>
-                          </div>
-
-                          {/* Product Info */}
-                          <div className="p-3">
-                            <h4 className="text-[11px] font-black uppercase tracking-tight text-ink leading-tight group-hover:text-accent transition-colors duration-300 line-clamp-2 mb-1">
-                              {product.name}
-                            </h4>
-                            <div className="flex items-center justify-between">
-                              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-ink/25">
-                                {product.category}
-                              </p>
-                              <div className="flex items-center gap-1.5">
-                                {product.discount && (
-                                  <span className="text-[9px] text-ink/25 line-through font-bold">
-                                    ${product.price.toFixed(2)}
-                                  </span>
-                                )}
-                                <span className="text-sm font-black text-ink">
-                                  ${(product.price * (1 - (product.discount || 0) / 100)).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                            <p className="text-[8px] font-bold text-ink/20 mt-0.5">{product.weight}</p>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  ) : (
-                    /* Empty state */
-                    <div className="flex flex-col items-center justify-center py-20 text-center">
-                      <div className="w-16 h-16 rounded-full bg-ink/5 flex items-center justify-center mb-6">
-                        <Search className="w-7 h-7 text-ink/15" />
-                      </div>
-                      <h3 className="text-sm font-black uppercase tracking-[0.3em] text-ink/30 mb-2">No Items Found</h3>
-                      <p className="text-xs text-ink/30 font-serif italic max-w-[200px]">
-                        Try adjusting your search or browse a different category.
-                      </p>
-                      <button
-                        onClick={() => { setSidebarSearch(''); setSidebarCategory('All'); }}
-                        className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-accent hover:text-ink transition-colors"
-                      >
-                        Reset Filters
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Sidebar Footer */}
-                <div className="px-6 py-4 border-t border-ink/5 flex-shrink-0 bg-[#FAFAFA]">
-                  <button
-                    onClick={() => {
-                      setIsCatSidebarOpen(false);
-                      document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="w-full bg-ink hover:bg-accent text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-3 group/btn"
-                  >
-                    View Full Collection
-                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </button>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+      <section className="relative pt-24 lg:pt-40 pb-16 lg:pb-24 bg-[#F5F2ED] overflow-hidden">
 
         <div className="lg:hidden relative h-[65vh] min-h-[500px] w-full overflow-hidden shadow-2xl z-10">
           <AnimatePresence mode="wait">
@@ -626,15 +423,15 @@ export default function StorePage({
             ref={catMarqueeContainerRef}
           >
             {/* Gradient fade edges */}
-            <div className="absolute inset-y-0 left-0 w-24 lg:w-48 bg-gradient-to-r from-[#FAF6F0] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 lg:w-48 bg-gradient-to-l from-[#FAF6F0] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-24 lg:w-48   z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-24 lg:w-48  z-10 pointer-events-none" />
 
             {/* Marquee track — duplicated for seamless loop */}
             <motion.div
               className="flex items-center gap-0 shrink-0"
-              animate={{ x: ['0%', '-50%'] }}
+              animate={{ x: ['15%', '-50%'] }}
               transition={{
-                duration: 18,
+                duration: 65,
                 repeat: Infinity,
                 ease: 'linear',
                 repeatType: 'loop',
@@ -794,68 +591,72 @@ export default function StorePage({
       </section>
 
       {/* 10/10 Mastercraft: Shop Gallery */}
-      <main id="shop-grid" className="py-16 lg:py-64 bg-white relative overflow-hidden">
+      <main id="shop-grid" className="py-24 lg:py-40 bg-paper relative overflow-hidden min-h-screen">
         {/* Spectral Grain Overlay */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-multiply"
-          style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")`, backgroundSize: '200px' }} />
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col space-y-10 lg:space-y-16 mb-14 lg:mb-40">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 lg:gap-12">
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-multiply"
+          style={{ backgroundImage: `url("https://grainy-gradients.vercel.app/noise.svg")`, backgroundSize: '150px' }} />
+
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
+
+          {/* Header & Filter System */}
+          <div className="flex flex-col mb-16 lg:mb-24">
+            <div className="flex flex-col lg:flex-row justify-between items-end gap-12 border-b border-ink/10 pb-8 mb-12">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="max-w-2xl"
+                className="max-w-3xl"
               >
-                <div className="flex items-center gap-4 mb-4">
-                  <span className="text-[12px] uppercase tracking-[0.6em] font-black text-accent">Selection</span>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-[1px] bg-accent" />
+                  <span className="text-[11px] uppercase tracking-[0.6em] font-black text-ink/40">Curated Harvest</span>
                 </div>
-                <h2 className="text-[3.5rem] lg:text-[8rem] leading-[0.8] font-black tracking-[-0.05em] text-ink uppercase">
-                  Shop <br />
-                  <motion.span
-                    animate={{
-                      backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                    }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                    className="text-accent lowercase italic font-serif tracking-normal block -mt-2 bg-gradient-to-r from-accent via-orange-400 to-accent bg-[length:200%_auto] bg-clip-text text-transparent"
-                  >
-                    Selection.
-                  </motion.span>
+                <h2 className="text-[13vw] lg:text-[7rem] leading-[0.85] font-serif italic text-ink">
+                  The <span className="font-sans not-italic font-black text-transparent bg-clip-text bg-gradient-to-r from-ink via-ink/80 to-ink tracking-tight uppercase">Collection</span>
                 </h2>
               </motion.div>
 
-              {/* Mastercraft Category Bar */}
-              <div className="hidden lg:flex bg-white p-1.5 rounded-full border-[0.5px] border-ink/10 items-center gap-1 overflow-hidden">
+              {/* Desktop Filter Tabs - Minimalist Text */}
+              <div className="hidden lg:flex flex-wrap justify-end gap-x-12 gap-y-4 max-w-4xl">
                 {CATEGORIES.map((category) => (
                   <button
                     key={category}
-                    onClick={() => setSelectedCategory(category as Category)}
-                    className={`relative px-10 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-700 z-10 ${selectedCategory === category ? 'text-white' : 'text-ink/40 hover:text-ink'
-                      }`}
+                    onClick={() => {
+                      setSelectedCategory(category as Category);
+                      setView('category');
+                    }}
+                    className="relative group py-2"
                   >
+                    <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-500 ${selectedCategory === category ? 'text-ink' : 'text-ink/30 group-hover:text-accent'
+                      }`}>
+                      {category}
+                    </span>
                     {selectedCategory === category && (
                       <motion.div
-                        layoutId="activeCategory"
-                        className="absolute inset-0 bg-ink rounded-full -z-10"
-                        transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                        layoutId="activeTab"
+                        className="absolute -bottom-1 left-0 right-0 h-[2px] bg-accent"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
                       />
                     )}
-                    {category}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Mobile Category Scroll (Professional Compact) */}
-            <div className="lg:hidden w-full overflow-x-auto pb-4 -mx-6 px-6 no-scrollbar">
-              <div className="flex gap-4">
+            {/* Mobile Filter Scroll - Premium Glass Pills */}
+            <div className="lg:hidden w-screen -mx-6 px-6 overflow-x-auto no-scrollbar pb-8">
+              <div className="flex gap-3 w-max">
                 {CATEGORIES.map((category) => (
                   <button
                     key={category}
-                    onClick={() => setSelectedCategory(category as Category)}
-                    className={`px-10 py-5 text-[11px] font-black uppercase tracking-widest whitespace-nowrap transition-all duration-500 border-[3px] ${selectedCategory === category
-                      ? 'bg-gradient-to-br from-accent to-orange-400 text-white border-transparent shadow-lg'
-                      : 'bg-white text-ink/40 border-line hover:border-ink hover:text-ink'
+                    onClick={() => {
+                      setSelectedCategory(category as Category);
+                      setView('category');
+                    }}
+                    className={`relative px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 backdrop-blur-md border ${selectedCategory === category
+                      ? 'bg-ink text-white border-ink shadow-lg shadow-ink/20'
+                      : 'bg-white/40 text-ink/60 border-white/40 hover:bg-white hover:border-ink/10'
                       }`}
                   >
                     {category}
@@ -865,10 +666,10 @@ export default function StorePage({
             </div>
           </div>
 
-          {/* Mastercraft Grid */}
+          {/* Mastercraft Grid - Exponentially Beautiful */}
           <motion.div
             layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12 lg:gap-20"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16 lg:gap-y-24"
           >
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product, index) => (
@@ -886,16 +687,20 @@ export default function StorePage({
           {/* Empty State: Cinematic */}
           {filteredProducts.length === 0 && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="py-64 text-center rounded-[3rem] border-2 border-dashed border-line/50 bg-surface/30 backdrop-blur-sm"
+              className="py-40 text-center flex flex-col items-center justify-center border-y border-ink/5"
             >
-              <div className="w-24 h-24 rounded-full bg-ink/5 flex items-center justify-center mx-auto mb-12">
-                <Search className="w-10 h-10 text-ink/10" />
+              <div className="relative w-32 h-32 mb-8">
+                <div className="absolute inset-0 border border-ink/10 rounded-full animate-[spin_10s_linear_infinite]" />
+                <div className="absolute inset-4 border border-ink/10 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Search className="w-8 h-8 text-ink/20" />
+                </div>
               </div>
-              <h3 className="text-4xl font-black uppercase tracking-[0.5em] text-ink/30">Silent Harvest</h3>
-              <p className="max-w-xs mx-auto text-xl text-ink/50 font-serif italic mt-8 leading-relaxed">
-                The earth has yet to reveal such bounty. Explore another path.
+              <h3 className="text-3xl font-serif italic text-ink/40 mb-4">The harvest is silent.</h3>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-ink/30">
+                Adjust your filters to reveal the bounty.
               </p>
             </motion.div>
           )}

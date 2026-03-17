@@ -31,9 +31,10 @@ import TrackingPage from './pages/TrackingPage';
 import AdminPage from './pages/AdminPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import CategoryPage from './pages/CategoryPage';
 
 export default function App() {
-  const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact'>('store');
+  const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact' | 'category'>('store');
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [categories, setCategories] = useState<string[]>(CATEGORIES);
   const [customers, setCustomers] = useState<UserType[]>([
@@ -331,6 +332,18 @@ export default function App() {
           onEditProduct={setEditingProduct}
           onDeleteProduct={handleDeleteProduct}
           onAddProduct={() => setIsAddingProduct(true)}
+        />
+      )}
+      
+      {view === 'category' && (
+        <CategoryPage
+          category={selectedCategory}
+          setCategory={setSelectedCategory}
+          setView={setView}
+          addToCart={addToCart}
+          openProductDetails={openProductDetails}
+          cartCount={cartCount}
+          setIsCartOpen={setIsCartOpen}
         />
       )}
       
