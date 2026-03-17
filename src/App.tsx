@@ -32,10 +32,11 @@ import AdminPage from './pages/AdminPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import CategoryPage from './pages/CategoryPage';
+import ProductPage from './pages/ProductPage';
 import WhatsAppButton from './components/WhatsAppButton';
 
 export default function App() {
-  const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact' | 'category'>('store');
+  const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact' | 'category' | 'product'>('store');
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [categories, setCategories] = useState<string[]>(CATEGORIES);
   const [customers, setCustomers] = useState<UserType[]>([
@@ -176,6 +177,7 @@ export default function App() {
   const openProductDetails = (product: Product) => {
     setSelectedProduct(product);
     setDetailQuantity(1);
+    setView('product');
   };
 
   const removeFromCart = (productId: string) => {
@@ -356,9 +358,20 @@ export default function App() {
         <ContactPage setView={setView} />
       )}
 
-      {/* Product Detail Modal */}
+      {view === 'product' && selectedProduct && (
+        <ProductPage 
+          product={selectedProduct}
+          setView={setView}
+          addToCart={addToCart}
+          cartCount={cartCount}
+          setIsCartOpen={setIsCartOpen}
+          openProductDetails={openProductDetails}
+        />
+      )}
+
+      {/* Product Detail Modal - Only fallback or when not in full page view */}
       <AnimatePresence>
-        {selectedProduct && (
+        {selectedProduct && view !== 'product' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -631,6 +644,8 @@ export default function App() {
           </button>
         </nav>
       </div>
+
+      <WhatsAppButton />
     </div>
   );
 }

@@ -146,6 +146,14 @@ export default function StorePage({
     return () => clearInterval(mobileTimer);
   }, [mobileFeatures.length]);
 
+  // Auto-scroll for mobile hero slides
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   const filteredProducts = useMemo(() => {
     let result = PRODUCTS.filter(product => {
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
@@ -272,59 +280,54 @@ export default function StorePage({
       <section className="relative pt-24 lg:pt-40 pb-16 lg:pb-24 bg-[#F5F2ED] overflow-hidden">
 
         <div className="lg:hidden relative h-[65vh] min-h-[500px] w-full overflow-hidden shadow-2xl z-10">
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, x: 50, scale: 0.98 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: -50, scale: 0.98 }}
-              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
               className="absolute inset-0 w-full h-full"
             >
-              {currentSlide === 0 && (
-                <div className="w-full h-full bg-black p-8 pt-12 relative overflow-hidden flex flex-col justify-between">
-                  <img src="/meat.png" alt="Meat Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-                  <div className="relative z-10 max-w-lg mt-auto">
-                    <p className="text-white/90 font-bold text-sm mb-4 tracking-wide shadow-black drop-shadow-md">Fresh Deals, Every Day</p>
-                    <h1 className="text-[#FFEB3B] text-4xl sm:text-5xl font-black leading-[0.9] mb-4 tracking-tight drop-shadow-lg shadow-black">
-                      Fresh Meat<br />Premium Quality
-                    </h1>
-                    <p className="text-white text-lg mb-8 font-medium drop-shadow-md shadow-black">Best Meat Deals Today</p>
-                    <button className="bg-white text-[#6b2118] px-8 py-3 rounded-full font-bold text-base w-fit shadow-xl hover:scale-105 transition-transform">
-                      Order Today
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {currentSlide === 1 && (
-                <div className="w-full h-full bg-[#111] p-8 pt-12 relative overflow-hidden flex flex-col items-center justify-start text-center">
-                  <img src="/snacks.png" alt="Snacks Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none" />
-                  <div className="relative z-10 w-full mb-4 mt-8">
-                    <p className="text-white font-bold text-[10px] uppercase tracking-widest mb-3 drop-shadow-lg shadow-black">Hot Deals This Week</p>
-                    <h2 className="text-white text-5xl font-black leading-tight mb-8 drop-shadow-xl shadow-black">Best Value,<br />Every Basket</h2>
-                    <button className="bg-white text-[#6b2118] px-8 py-3 rounded-full font-bold text-sm shadow-xl hover:scale-105 transition-transform">
-                      Shop Sale
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {currentSlide === 2 && (
-                <div className="w-full h-full bg-[#111] p-8 pt-12 relative overflow-hidden flex flex-col items-start justify-start text-left">
-                  <img src="/provision.png" alt="Provisions Background" className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent pointer-events-none" />
-                  <div className="relative z-10 w-full mt-8">
-                    <p className="text-white/90 font-bold text-[10px] uppercase tracking-widest mb-3 drop-shadow-lg shadow-black">Rice & Flour Essentials</p>
-                    <h2 className="text-white text-5xl font-black leading-tight mb-8 drop-shadow-xl shadow-black">Quality Staples<br />Better Value</h2>
-                    <div className="bg-[#FFEB3B]/20 backdrop-blur-md px-6 py-3 rounded-xl w-fit border border-[#FFEB3B]/30 shadow-2xl">
-                      <p className="text-[#FFEB3B] font-black text-xl">Starting at £10</p>
+              <div className="w-full h-full bg-[#111] p-8 pt-12 relative overflow-hidden flex flex-col justify-between">
+                <img 
+                  src={HERO_SLIDES[currentSlide].image} 
+                  alt={HERO_SLIDES[currentSlide].title} 
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 scale-110" 
+                  style={{ objectPosition: HERO_SLIDES[currentSlide].mobilePosition || 'center' }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                
+                <div className="relative z-10 w-full mt-8">
+                  <p className="text-white/90 font-bold text-[10px] uppercase tracking-widest mb-3 drop-shadow-lg shadow-black">
+                    {HERO_SLIDES[currentSlide].label}
+                  </p>
+                  <h2 className="text-white text-4xl sm:text-5xl font-black leading-[0.9] mb-4 tracking-tight drop-shadow-xl shadow-black">
+                    {HERO_SLIDES[currentSlide].title.split('.').map((part, i, arr) => (
+                      <React.Fragment key={i}>
+                        {part}{i !== arr.length - 1 && '.'}<br />
+                      </React.Fragment>
+                    ))}
+                  </h2>
+                  
+                  {HERO_SLIDES[currentSlide].badge && (
+                    <div className="bg-[#FFEB3B]/20 backdrop-blur-md px-6 py-3 rounded-xl w-fit border border-[#FFEB3B]/30 shadow-2xl mt-4">
+                      <p className="text-[#FFEB3B] font-black text-sm uppercase tracking-widest">
+                        {HERO_SLIDES[currentSlide].badge}
+                      </p>
                     </div>
+                  )}
+
+                  <div className="mt-8">
+                    <button 
+                      onClick={() => document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' })}
+                      className="bg-white text-ink px-8 py-3 rounded-full font-black text-[11px] uppercase tracking-widest shadow-xl hover:scale-105 transition-transform"
+                    >
+                      Shop Collection
+                    </button>
                   </div>
                 </div>
-              )}
+              </div>
             </motion.div>
           </AnimatePresence>
 

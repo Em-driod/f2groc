@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LayoutGrid, 
-  Beef, 
-  Leaf, 
-  Coffee, 
-  Wheat, 
-  Flame, 
-  Candy, 
-  ShoppingBasket, 
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import {
+  LayoutGrid,
+  Beef,
+  Leaf,
+  Coffee,
+  Wheat,
+  Flame,
+  Candy,
+  ShoppingBasket,
   Utensils,
   ArrowRight,
   X,
@@ -43,10 +43,15 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
   const [isPeeking, setIsPeeking] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
+  // Scroll logic for helper visibility
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 150], [1, 0]);
+  const display = useTransform(scrollY, [0, 150], ['flex', 'none']);
+
   // Periodic Peek Animation Logic
   useEffect(() => {
     if (isExpanded || hasInteracted) return;
-    
+
     // Initial peek on mount
     const initialPeek = setTimeout(() => {
       setIsPeeking(true);
@@ -55,9 +60,9 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
 
     const interval = setInterval(() => {
       setIsPeeking(true);
-      setTimeout(() => setIsPeeking(false), 4000); 
-    }, 18000); 
-    
+      setTimeout(() => setIsPeeking(false), 4000);
+    }, 18000);
+
     return () => {
       clearTimeout(initialPeek);
       clearInterval(interval);
@@ -92,8 +97,8 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
       </AnimatePresence>
 
       {/* 1. PERMANENT WINE TOGGLE - The Anchor that never leaves */}
-      <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[1005] pl-4 flex items-center gap-4">
-        <motion.button 
+      <div className="fixed left-0 top-[22%] -translate-y-1/2 z-[1005] pl-4 flex items-center gap-4">
+        <motion.button
           onClick={() => {
             setIsExpanded(!isExpanded);
             setIsPeeking(false);
@@ -104,15 +109,15 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
           className="relative w-16 h-16 flex items-center justify-center rounded-2xl bg-[#3D0C0C] text-[#E5C285] shadow-[0_15px_40px_rgba(61,12,12,0.4)] group/wine overflow-hidden"
         >
           {/* Liquid background effect */}
-          <motion.div 
-            animate={{ 
+          <motion.div
+            animate={{
               y: [0, -5, 0],
               rotate: [0, 5, 0]
             }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="absolute inset-0 bg-gradient-to-t from-[#5E1B1B] to-transparent opacity-50"
           />
-          
+
           <AnimatePresence mode="wait">
             {isExpanded ? (
               <motion.div key="x" initial={{ opacity: 0, rotate: -180 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 180 }}>
@@ -121,7 +126,7 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
             ) : (
               <motion.div key="wine" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }} className="relative z-10">
                 <Wine size={28} strokeWidth={1.5} className="group-hover/wine:rotate-12 transition-transform duration-500" />
-                <motion.div 
+                <motion.div
                   animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.5, 0.2] }}
                   transition={{ duration: 3, repeat: Infinity }}
                   className="absolute -inset-3 bg-[#E5C285]/20 rounded-full -z-10"
@@ -131,14 +136,15 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
           </AnimatePresence>
         </motion.button>
 
-        {/* Floating "Click Here" Helper */}
+        {/* Floating "Click Here" Helper - Only in Hero Section */}
         <AnimatePresence>
           {!isExpanded && !hasInteracted && (
             <motion.div
+              style={{ opacity, display }}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-2xl border border-ink/10 pointer-events-none"
+              className="flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-2xl border border-ink/10 pointer-events-none"
             >
               <motion.div
                 animate={{ x: [0, 8, 0] }}
@@ -157,9 +163,9 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
         initial="collapsed"
         animate={isExpanded ? "expanded" : (isPeeking ? "peeking" : "collapsed")}
         variants={containerVariants}
-        transition={{ 
-          type: 'spring', 
-          stiffness: isPeeking ? 100 : 250, 
+        transition={{
+          type: 'spring',
+          stiffness: isPeeking ? 100 : 250,
           damping: isPeeking ? 15 : 35,
           mass: isPeeking ? 1.5 : 1
         }}
@@ -167,7 +173,7 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
       >
         <div className="flex-1 flex flex-col h-full pointer-events-auto">
           {/* Vertical Icon Stream (Peeking Part) */}
-          <motion.div 
+          <motion.div
             variants={anchorVariants}
             className="absolute inset-y-0 left-0 w-[80px] flex flex-col items-center justify-center gap-8 bg-white border-r border-ink/5 pt-12 pb-12 shadow-[20px_0_40px_rgba(0,0,0,0.02)]"
           >
@@ -188,10 +194,10 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
               {categories.slice(1, 8).map((cat, i) => {
                 const Icon = CATEGORY_ICONS[cat] || LayoutGrid;
                 return (
-                  <motion.button 
+                  <motion.button
                     key={`anchor-icon-${i}`}
                     initial={{ opacity: 0, x: -20 }}
-                    animate={{ 
+                    animate={{
                       opacity: (isExpanded || isPeeking) ? 1 : 0,
                       x: (isExpanded || isPeeking) ? 0 : -20,
                       scale: selectedCategory === cat ? 1.2 : 1
@@ -214,7 +220,7 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
                 );
               })}
             </div>
-            
+
             <div className="w-px h-16 bg-gradient-to-b from-ink/5 via-ink/10 to-transparent my-4" />
             <motion.div
               animate={{ y: [0, 6, 0] }}
@@ -250,14 +256,12 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
                         setIsExpanded(false);
                         setHasInteracted(true);
                       }}
-                      className={`group w-full flex items-center gap-4 py-3 px-4 rounded-xl transition-all duration-300 ${
-                        isActive ? 'bg-ink text-white shadow-lg' : 'hover:bg-paper'
-                      }`}
+                      className={`group w-full flex items-center gap-4 py-3 px-4 rounded-xl transition-all duration-300 ${isActive ? 'bg-ink text-white shadow-lg' : 'hover:bg-paper'
+                        }`}
                     >
                       <Icon size={16} className={isActive ? 'text-accent' : 'text-ink/30 group-hover:text-ink'} />
-                      <span className={`text-[11px] font-black uppercase tracking-widest transition-all ${
-                        isActive ? 'text-white' : 'text-ink/40 group-hover:text-ink'
-                      }`}>
+                      <span className={`text-[11px] font-black uppercase tracking-widest transition-all ${isActive ? 'text-white' : 'text-ink/40 group-hover:text-ink'
+                        }`}>
                         {category}
                       </span>
                       {isActive && (
@@ -282,7 +286,7 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
         {!isExpanded && !isPeeking && (
           <motion.div
             initial={{ opacity: 0, x: -20 }}
-            animate={{ 
+            animate={{
               opacity: [0, 1, 0],
               x: [0, 10, 0]
             }}
