@@ -32,6 +32,7 @@ import AdminPage from './pages/AdminPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import CategoryPage from './pages/CategoryPage';
+import WhatsAppButton from './components/WhatsAppButton';
 
 export default function App() {
   const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact' | 'category'>('store');

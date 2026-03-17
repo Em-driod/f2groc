@@ -138,15 +138,15 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="hidden sm:flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl shadow-xl border border-ink/5 pointer-events-none"
+              className="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-2xl border border-ink/10 pointer-events-none"
             >
               <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
+                animate={{ x: [0, 8, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <MousePointer2 size={16} className="text-accent rotate-[-45deg]" />
+                <MousePointer2 size={18} className="text-accent rotate-[-45deg] fill-accent/10" />
               </motion.div>
-              <span className="text-[9px] font-black uppercase tracking-widest text-ink/60 whitespace-nowrap">click to see our catalog</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-ink whitespace-nowrap">click to see more</span>
             </motion.div>
           )}
         </AnimatePresence>
