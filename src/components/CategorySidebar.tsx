@@ -15,7 +15,8 @@ import {
   Wine,
   Droplets,
   MousePointer2,
-  ChevronRight
+  ChevronRight,
+  LayoutPanelLeft
 } from 'lucide-react';
 import { Category } from '../types';
 
@@ -125,7 +126,7 @@ export default function CategorySidebar({ categories, selectedCategory, setSelec
               </motion.div>
             ) : (
               <motion.div key="wine" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }} className="relative z-10">
-                <Wine size={28} strokeWidth={1.5} className="group-hover/wine:rotate-12 transition-transform duration-500" />
+                <LayoutPanelLeft size={28} strokeWidth={1.5} className="group-hover/wine:rotate-12 transition-transform duration-500" />
                 <motion.div
                   animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.5, 0.2] }}
                   transition={{ duration: 3, repeat: Infinity }}

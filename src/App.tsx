@@ -269,6 +269,16 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-paper flex flex-col selection:bg-ink selection:text-paper">
+      <Navbar
+        setView={setView}
+        cartCount={cartCount}
+        setIsCartOpen={setIsCartOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        transparent={view === 'store'}
+      />
+
       {/* Standalone Navbar - appears across all pages */}
       <Navbar
         setView={setView}

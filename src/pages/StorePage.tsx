@@ -364,12 +364,20 @@ export default function StorePage({
                     document.getElementById('shop-grid')?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full p-1 border-2 border-transparent hover:border-[#6b2118] bg-white shadow-md hover:shadow-xl transition-all duration-300">
+                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full p-1 border-2 border-transparent hover:border-[#6b2118] bg-white shadow-md hover:shadow-xl transition-all duration-300 relative">
                     <img
                       src={CATEGORY_IMAGES[category] || '/logo.jpeg'}
                       alt={category}
                       className="w-full h-full object-cover rounded-full"
                     />
+                    {/* Add a subtle glow/border for the active item */}
+                    {selectedCategory === category && (
+                      <motion.div
+                        layoutId="activeCategoryBorder"
+                        className="absolute inset-0 rounded-full border-2 border-accent shadow-accent/50 shadow-lg"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
                   </div>
                   <span className="mt-3 text-[10px] lg:text-[11px] font-black uppercase tracking-[0.2em] text-ink/60">
                     {category}
