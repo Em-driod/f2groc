@@ -34,6 +34,7 @@ import ContactPage from './pages/ContactPage';
 import CategoryPage from './pages/CategoryPage';
 import ProductPage from './pages/ProductPage';
 import WhatsAppButton from './components/WhatsAppButton';
+import Navbar from './components/Navbar';
 
 export default function App() {
   const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact' | 'category' | 'product'>('store');
@@ -264,6 +265,19 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-paper flex flex-col selection:bg-ink selection:text-paper">
+      {/* Standalone Navbar - appears across all pages */}
+      <Navbar
+        setView={setView}
+        cartCount={cartCount}
+        setIsCartOpen={setIsCartOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        variant={view === 'store' ? 'main' : 'simple'}
+        backLabel={view === 'checkout' ? 'Back to Store' : view === 'account' ? 'Back to Store' : view === 'about' ? 'Back to Store' : view === 'contact' ? 'Back to Store' : view === 'category' ? 'Back to Store' : view === 'product' ? 'Back to Store' : 'Back to Store'}
+        transparent={view === 'store'}
+      />
+
       {view === 'store' && (
         <StorePage
           searchQuery={searchQuery}

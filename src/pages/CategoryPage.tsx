@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, ShoppingCart, User, Plus, ShoppingBag } from 'lucide-react';
+import Navbar from '../components/Navbar';
 import { Product, CartItem, Category } from '../types';
 import { PRODUCTS, CATEGORIES } from '../constants';
 
@@ -45,32 +46,13 @@ export default function CategoryPage({
 
   return (
     <div className="min-h-screen bg-paper">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-[1000] bg-white/80 backdrop-blur-3xl border-b border-ink/5">
-        <div className="max-w-[1600px] mx-auto px-6 h-20 flex justify-between items-center">
-          <button 
-            onClick={() => setView('store')}
-            className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-ink/40 hover:text-ink transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to Store
-          </button>
-
-          <div className="flex items-center gap-8">
-            <button onClick={() => setIsCartOpen(true)} className="relative group p-2">
-              <ShoppingBag className="w-5 h-5 text-ink" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-white text-[8px] font-black flex items-center justify-center rounded-full">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-            <button onClick={() => setView('account')} className="text-ink/40 hover:text-ink transition-colors">
-              <User className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar 
+        setView={setView}
+        cartCount={cartCount}
+        setIsCartOpen={setIsCartOpen}
+        setIsMobileMenuOpen={() => {}} // Not used in simple variant but required by props if I didn't make it optional
+        variant="simple"
+      />
 
       <main className="pt-32 pb-40">
         <div className="max-w-[1600px] mx-auto px-6 lg:px-12">
