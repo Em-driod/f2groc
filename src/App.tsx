@@ -33,11 +33,15 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import CategoryPage from './pages/CategoryPage';
 import ProductPage from './pages/ProductPage';
+import CollectionsPage from './pages/CollectionsPage';
+import StoryPage from './pages/StoryPage';
+import JournalPage from './pages/JournalPage';
 import WhatsAppButton from './components/WhatsAppButton';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 export default function App() {
-  const [view, setView] = useState<'store' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact' | 'category' | 'product'>('store');
+  const [view, setView] = useState<'store' | 'collections' | 'story' | 'journal' | 'checkout' | 'success' | 'account' | 'tracking' | 'admin' | 'about' | 'contact' | 'category' | 'product'>('store');
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [categories, setCategories] = useState<string[]>(CATEGORIES);
   const [customers, setCustomers] = useState<UserType[]>([
@@ -274,7 +278,7 @@ export default function App() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         variant={view === 'store' ? 'main' : 'simple'}
-        backLabel={view === 'checkout' ? 'Back to Store' : view === 'account' ? 'Back to Store' : view === 'about' ? 'Back to Store' : view === 'contact' ? 'Back to Store' : view === 'category' ? 'Back to Store' : view === 'product' ? 'Back to Store' : 'Back to Store'}
+        backLabel={view === 'checkout' ? 'Back to Store' : view === 'account' ? 'Back to Store' : view === 'about' ? 'Back to Store' : view === 'contact' ? 'Back to Store' : view === 'category' ? 'Back to Store' : view === 'product' ? 'Back to Store' : view === 'collections' ? 'Back to Store' : view === 'story' ? 'Back to Store' : view === 'journal' ? 'Back to Store' : 'Back to Store'}
         transparent={view === 'store'}
       />
 
@@ -292,6 +296,28 @@ export default function App() {
           setIsMobileMenuOpen={setIsMobileMenuOpen}
           addToCart={addToCart}
           openProductDetails={openProductDetails}
+          setView={setView}
+        />
+      )}
+      
+      {view === 'collections' && (
+        <CollectionsPage
+          setView={setView}
+          addToCart={addToCart}
+          openProductDetails={openProductDetails}
+          cartCount={cartCount}
+          setIsCartOpen={setIsCartOpen}
+        />
+      )}
+      
+      {view === 'story' && (
+        <StoryPage
+          setView={setView}
+        />
+      )}
+      
+      {view === 'journal' && (
+        <JournalPage
           setView={setView}
         />
       )}
@@ -659,6 +685,7 @@ export default function App() {
         </nav>
       </div>
 
+      <Footer />
       <WhatsAppButton />
     </div>
   );

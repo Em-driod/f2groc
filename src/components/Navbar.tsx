@@ -81,13 +81,14 @@ export default function Navbar({
             </motion.div>
 
             <div className="hidden md:flex items-center gap-10">
-              {['Shop', 'About', 'Journal'].map((item) => (
+              {['Store', 'Collections', 'Story', 'Journal'].map((item) => (
                 <button 
                   key={item} 
                   onClick={() => {
-                    if (item === 'Shop') setView('store');
-                    if (item === 'About') setView('about');
-                    if (item === 'Journal') setView('store'); // Assuming Journal is on StorePage
+                    if (item === 'Store') setView('store');
+                    if (item === 'Collections') setView('collections');
+                    if (item === 'Story') setView('story');
+                    if (item === 'Journal') setView('journal');
                   }}
                   className="text-[11px] uppercase tracking-[0.3em] font-black text-ink/60 hover:text-ink transition-colors"
                 >
